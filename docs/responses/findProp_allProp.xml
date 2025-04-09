@@ -1,0 +1,124 @@
+<d:multistatus xmlns:s="http://sabredav.org/ns" xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
+    <d:response>
+        <d:href>/remote.php/dav/spaces/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe/
+        </d:href>
+        <d:propstat>
+            <d:prop>
+                <oc:id>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe
+                </oc:id>
+                <oc:fileid>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe
+                </oc:fileid>
+                <oc:spaceid>cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe</oc:spaceid>
+                <oc:file-parent>cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe
+                </oc:file-parent>
+                <oc:name>Admin</oc:name>
+                <d:displayname>Admin</d:displayname>
+                <d:getetag>"26c7d4af14a1b5b7a91eb64eb020a42b"</d:getetag>
+                <oc:permissions>RDNVCKZP</oc:permissions>
+                <d:resourcetype>
+                    <d:collection/>
+                </d:resourcetype>
+                <oc:size>49</oc:size>
+                <d:getlastmodified>Wed, 09 Apr 2025 08:52:46 GMT</d:getlastmodified>
+                <oc:tags></oc:tags>
+                <oc:favorite>0</oc:favorite>
+            </d:prop>
+            <d:status>HTTP/1.1 200 OK</d:status>
+        </d:propstat>
+        <d:propstat>
+            <d:prop>
+                <oc:audio></oc:audio>
+                <oc:location></oc:location>
+                <oc:image></oc:image>
+                <oc:photo></oc:photo>
+            </d:prop>
+            <d:status>HTTP/1.1 404 Not Found</d:status>
+        </d:propstat>
+    </d:response>
+    <d:response>
+        <d:href>
+            /remote.php/dav/spaces/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe/README.md
+        </d:href>
+        <d:propstat>
+            <d:prop>
+                <oc:id>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!697c779b-b2d0-4e6b-b844-f3860cd78929
+                </oc:id>
+                <oc:fileid>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!697c779b-b2d0-4e6b-b844-f3860cd78929
+                </oc:fileid>
+                <oc:spaceid>cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe</oc:spaceid>
+                <oc:file-parent>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe
+                </oc:file-parent>
+                <oc:name>README.md</oc:name>
+                <d:displayname>README.md</d:displayname>
+                <d:getetag>"f18db2265c3eaa0671d82c5dce6843a6"</d:getetag>
+                <oc:permissions>RDNVWZP</oc:permissions>
+                <d:resourcetype></d:resourcetype>
+                <d:getcontentlength>49</d:getcontentlength>
+                <d:getcontenttype>text/markdown</d:getcontenttype>
+                <d:getlastmodified>Wed, 09 Apr 2025 08:52:28 GMT</d:getlastmodified>
+                <oc:checksums>
+                    <oc:checksum>SHA1:47f693e10d95f63523a446e89a43b2661207121c MD5:afef1f85c57946ccd7fbb4c49f3e2073
+                        ADLER32:a01f116a
+                    </oc:checksum>
+                </oc:checksums>
+                <oc:tags></oc:tags>
+                <oc:favorite>0</oc:favorite>
+            </d:prop>
+            <d:status>HTTP/1.1 200 OK</d:status>
+        </d:propstat>
+        <d:propstat>
+            <d:prop>
+                <oc:audio></oc:audio>
+                <oc:location></oc:location>
+                <oc:image></oc:image>
+                <oc:photo></oc:photo>
+            </d:prop>
+            <d:status>HTTP/1.1 404 Not Found</d:status>
+        </d:propstat>
+    </d:response>
+    <d:response>
+        <d:href>
+            /remote.php/dav/spaces/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe/Spektakul%C3%A4re%20Dokumente/
+        </d:href>
+        <d:propstat>
+            <d:prop>
+                <oc:id>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!45128509-55bf-40dd-a714-b15102cabc91
+                </oc:id>
+                <oc:fileid>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!45128509-55bf-40dd-a714-b15102cabc91
+                </oc:fileid>
+                <oc:spaceid>cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe</oc:spaceid>
+                <oc:file-parent>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe
+                </oc:file-parent>
+                <oc:name>Spektakuläre Dokumente</oc:name>
+                <d:displayname>Spektakuläre Dokumente</d:displayname>
+                <d:getetag>"0a250057fe63fda3f6cdaf6dfd627c3c"</d:getetag>
+                <oc:permissions>RDNVCKZP</oc:permissions>
+                <d:resourcetype>
+                    <d:collection/>
+                </d:resourcetype>
+                <oc:size>0</oc:size>
+                <d:getlastmodified>Wed, 09 Apr 2025 08:52:46 GMT</d:getlastmodified>
+                <oc:tags></oc:tags>
+                <oc:favorite>0</oc:favorite>
+            </d:prop>
+            <d:status>HTTP/1.1 200 OK</d:status>
+        </d:propstat>
+        <d:propstat>
+            <d:prop>
+                <oc:audio></oc:audio>
+                <oc:location></oc:location>
+                <oc:image></oc:image>
+                <oc:photo></oc:photo>
+            </d:prop>
+            <d:status>HTTP/1.1 404 Not Found</d:status>
+        </d:propstat>
+    </d:response>
+</d:multistatus>

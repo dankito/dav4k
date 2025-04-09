@@ -15,6 +15,6 @@ open class WebDavClient(
     protected open val propFindHandler = PropFindHandler(webClient)
 
 
-    open suspend fun list(url: String, depth: Int = 1) = propFindHandler.list(url, depth)
+    open suspend fun list(url: String, depth: Int = 1) = propFindHandler.allProp(url, depth)
 
 }
