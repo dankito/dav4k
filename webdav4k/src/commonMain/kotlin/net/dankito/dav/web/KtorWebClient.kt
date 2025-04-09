@@ -77,7 +77,10 @@ open class KtorWebClient(
         makeRequest(HttpMethod.Delete, parameters)
 
     override suspend fun <T : Any> custom(httpMethod: String, parameters: RequestParameters<T>) =
-        makeRequest(HttpMethod(httpMethod), parameters)
+        custom(HttpMethod(httpMethod), parameters)
+
+    open suspend fun <T : Any> custom(method: HttpMethod, parameters: RequestParameters<T>) =
+        makeRequest(method, parameters)
 
 
     protected open suspend fun <T : Any> makeRequest(method: HttpMethod, parameters: RequestParameters<T>): WebClientResponse<T> {
