@@ -4,6 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -14,10 +15,12 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import net.codinux.log.logger
+import net.dankito.dav.web.credentials.Credentials
 
 open class KtorWebClient(
-    protected open val baseUrl: String? = null,
-    protected open val defaultUserAgent: String? = RequestParameters.DefaultMobileUserAgent
+    baseUrl: String? = null,
+    credentials: Credentials? = null,
+    defaultUserAgent: String? = RequestParameters.DefaultMobileUserAgent
 ) : WebClient {
 
     protected open val json = Json {
@@ -26,16 +29,23 @@ open class KtorWebClient(
 
     protected val log by logger()
 
-    protected open val client = HttpClient { configureClient(this) }
+    protected open val client = HttpClient { configureClient(this, baseUrl, credentials, defaultUserAgent) }
 
-    private fun configureClient(config: HttpClientConfig<*>) {
+    private fun configureClient(config: HttpClientConfig<*>, baseUrl: String?, credentials: Credentials?, defaultUserAgent: String?) {
         config.apply {
             install(HttpTimeout)
             install(ContentNegotiation) {
                 json()
             }
             install(Auth) {
-
+                (credentials as? net.dankito.dav.web.credentials.BasicAuthCredentials)?.let { basicAuth ->
+                    basic {
+                        sendWithoutRequest { true }
+                        credentials {
+                            BasicAuthCredentials(basicAuth.username, basicAuth.password)
+                        }
+                    }
+                }
             }
 
             defaultRequest {
