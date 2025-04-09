@@ -20,4 +20,4 @@ plugins {
 }
 
 
-rootProject.name = "Dav4kProject"
+include("webdav4k")
