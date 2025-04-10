@@ -28,6 +28,8 @@ open class WebDavClient(
 
     protected open val moveFile = MoveFileCommand(webClient)
 
+    protected open val fileExists = FileExistsCommand(webClient)
+
 
     /**
      * Lists the properties of the resource specified by [url].
@@ -101,5 +103,10 @@ open class WebDavClient(
      */
     open suspend fun moveFile(sourceUrl: String, destinationUrl: String, overwrite: Boolean = false) =
         moveFile.move(sourceUrl, destinationUrl, overwrite)
+
+    /**
+     * Returns if the file at [fileUrl] exists.
+     */
+    open suspend fun fileExists(fileUrl: String) = fileExists.exists(fileUrl)
 
 }

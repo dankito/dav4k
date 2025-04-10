@@ -174,6 +174,33 @@ class WebDavClientTest {
     }
 
     @Test
+    fun fileExists() = runTest {
+        val uploadFileResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
+
+        assertThat(uploadFileResult).isTrue()
+
+
+        val result = localWebDavClient.fileExists(fileUrl)
+
+        assertThat(result).isTrue()
+
+
+        localWebDavClient.deleteFileOrDirectory(destinationFileUrl)
+    }
+
+    @Test
+    fun fileDoesNotExist() = runTest {
+        val fileUrl = "/i_do_not_exist.txt"
+
+        localWebDavClient.deleteFileOrDirectory(fileUrl)
+
+
+        val result = localWebDavClient.fileExists(fileUrl)
+
+        assertThat(result).isFalse()
+    }
+
+    @Test
     fun localWebDav() = runTest {
         val result = localWebDavClient.list("/")
 
