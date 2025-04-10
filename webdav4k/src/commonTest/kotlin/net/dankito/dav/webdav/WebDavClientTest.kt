@@ -86,6 +86,24 @@ class WebDavClientTest {
     }
 
     @Test
+    fun downloadFile() = runTest {
+        val fileUrl = "/test.txt"
+        val fileContent = "Hallo Stasi,\nich liebe dich!"
+
+        val uploadResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
+
+        assertThat(uploadResult).isTrue()
+
+
+        val result = localWebDavClient.downloadFile(fileUrl)
+
+        assertThat(result).isNotNull().hasSize(fileContent.length)
+        assertThat(result!!.decodeToString()).isEqualTo(fileContent)
+
+        localWebDavClient.deleteFileOrDirectory(fileUrl)
+    }
+
+    @Test
     fun uploadFile() = runTest {
         val fileUrl = "/test.txt"
         val fileContent = "Hallo Stasi,\nich liebe dich!"
@@ -100,6 +118,8 @@ class WebDavClientTest {
         assertThat(filesOnServer).isNotNull()
         assertThat(filesOnServer!!.responses).hasSize(1)
         // TODO: store test start time and check if lastUpdateTime is after test start time
+
+        localWebDavClient.deleteFileOrDirectory(fileUrl)
     }
 
 

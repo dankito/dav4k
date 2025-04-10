@@ -4,10 +4,7 @@ import net.dankito.dav.web.KtorWebClient
 import net.dankito.dav.web.WebClient
 import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Property
-import net.dankito.dav.webdav.operations.CreateDirectoryCommand
-import net.dankito.dav.webdav.operations.DeleteFileCommand
-import net.dankito.dav.webdav.operations.PropFindHandler
-import net.dankito.dav.webdav.operations.UploadFileCommand
+import net.dankito.dav.webdav.operations.*
 import net.dankito.dav.webdav.options.UploadFileOptions
 
 open class WebDavClient(
@@ -20,6 +17,8 @@ open class WebDavClient(
     protected open val propFind = PropFindHandler(webClient)
 
     protected open val createDirectory = CreateDirectoryCommand(webClient)
+
+    protected open val downloadFile = DownloadFileCommand(webClient)
 
     protected open val uploadFile = UploadFileCommand(webClient)
 
@@ -64,6 +63,11 @@ open class WebDavClient(
      * Creates a directory at [url].
      */
     open suspend fun createDirectory(url: String) = createDirectory.createDirectory(url)
+
+    /**
+     * Downloads a file from [fileUrl].
+     */
+    open suspend fun downloadFile(fileUrl: String) = downloadFile.downloadFile(fileUrl)
 
     /**
      * Uploads a file to [destinationUrl]. Ensure that all intermediate folders exist on server.
