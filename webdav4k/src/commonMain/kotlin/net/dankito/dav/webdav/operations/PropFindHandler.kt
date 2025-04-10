@@ -79,7 +79,7 @@ open class PropFindHandler(
             "DEPTH" to if (depth in 0 until Int.MAX_VALUE) depth.toString() else "infinity"
         ))
 
-        val response = executeCustomRequest(request)
+        val response = executeCustomRequest(PropFindHttpMethod, request)
 
         return if (response.isSuccessResponse) {
             multiStatusReader.parse(response.body!!)

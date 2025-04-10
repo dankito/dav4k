@@ -4,6 +4,7 @@ import net.dankito.dav.web.KtorWebClient
 import net.dankito.dav.web.WebClient
 import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Property
+import net.dankito.dav.webdav.operations.CreateDirectoryCommand
 import net.dankito.dav.webdav.operations.DeleteFileCommand
 import net.dankito.dav.webdav.operations.PropFindHandler
 import net.dankito.dav.webdav.operations.UploadFileCommand
@@ -17,6 +18,8 @@ open class WebDavClient(
 
 
     protected open val propFind = PropFindHandler(webClient)
+
+    protected open val createDirectory = CreateDirectoryCommand(webClient)
 
     protected open val uploadFile = UploadFileCommand(webClient)
 
@@ -58,6 +61,11 @@ open class WebDavClient(
 
 
     /**
+     * Creates a directory at [url].
+     */
+    open suspend fun createDirectory(url: String) = createDirectory.createDirectory(url)
+
+    /**
      * Uploads a file to [destinationUrl]. Ensure that all intermediate folders exist on server.
      *
      * [UploadFileOptions.overwrite] currently does not work.
@@ -68,6 +76,6 @@ open class WebDavClient(
     /**
      * Deletes the file or directory identified by [fileUrl].
      */
-    open suspend fun deleteFile(fileUrl: String) = deleteFile.deleteFile(fileUrl)
+    open suspend fun deleteFileOrDirectory(fileUrl: String) = deleteFile.deleteFile(fileUrl)
 
 }

@@ -71,6 +71,21 @@ class WebDavClientTest {
 
 
     @Test
+    fun createDirectory() = runTest {
+        val directoryUrl = "/testSubDirectory"
+
+        localWebDavClient.deleteFileOrDirectory(directoryUrl) // ensure directory does not already exist
+
+
+        val result = localWebDavClient.createDirectory(directoryUrl)
+
+        assertThat(result).isTrue()
+
+
+        localWebDavClient.deleteFileOrDirectory(directoryUrl)
+    }
+
+    @Test
     fun uploadFile() = runTest {
         val fileUrl = "/test.txt"
         val fileContent = "Hallo Stasi,\nich liebe dich!"
@@ -102,7 +117,7 @@ class WebDavClientTest {
         assertThat(filesOnServerBefore!!.responses).hasSize(1)
 
 
-        val result = localWebDavClient.deleteFile(fileUrl)
+        val result = localWebDavClient.deleteFileOrDirectory(fileUrl)
 
 
         assertThat(result).isTrue()
