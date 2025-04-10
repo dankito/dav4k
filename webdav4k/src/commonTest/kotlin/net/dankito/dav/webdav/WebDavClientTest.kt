@@ -1,10 +1,7 @@
 package net.dankito.dav.webdav
 
 import assertk.assertThat
-import assertk.assertions.hasSize
-import assertk.assertions.isIn
-import assertk.assertions.isNotNull
-import assertk.assertions.isTrue
+import assertk.assertions.*
 import kotlinx.coroutines.test.runTest
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.options.UploadFileOptions
@@ -88,6 +85,34 @@ class WebDavClientTest {
         assertThat(filesOnServer).isNotNull()
         assertThat(filesOnServer!!.responses).hasSize(1)
         // TODO: store test start time and check if lastUpdateTime is after test start time
+    }
+
+
+    @Test
+    fun deleteFile() = runTest {
+        val fileUrl = "/test.txt"
+
+        val uploadResult = localWebDavClient.uploadFile(fileUrl, "Any content".encodeToByteArray(), UploadFileOptions("text/plain", true))
+
+        assertThat(uploadResult).isTrue()
+
+        val filesOnServerBefore = localWebDavClient.list(fileUrl)
+
+        assertThat(filesOnServerBefore).isNotNull()
+        assertThat(filesOnServerBefore!!.responses).hasSize(1)
+
+
+        val result = localWebDavClient.deleteFile(fileUrl)
+
+
+        assertThat(result).isTrue()
+
+        val filesOnServerAfter = localWebDavClient.list(fileUrl)
+
+        assertThat(filesOnServerAfter).isNotNull()
+        // hm, the WebDAV server i use still returns the file, which is not conformant to standard, it just sets its contentlength to 0
+        assertThat(filesOnServerAfter!!.responses).hasSize(1)
+        assertThat(filesOnServerAfter.responses.first().propStats.first().properties.first { it.name == "getcontentlength" }.value).isEqualTo("0")
     }
 
     @Test

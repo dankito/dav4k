@@ -4,6 +4,7 @@ import net.dankito.dav.web.KtorWebClient
 import net.dankito.dav.web.WebClient
 import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Property
+import net.dankito.dav.webdav.operations.DeleteFileCommand
 import net.dankito.dav.webdav.operations.PropFindHandler
 import net.dankito.dav.webdav.operations.UploadFileCommand
 import net.dankito.dav.webdav.options.UploadFileOptions
@@ -18,6 +19,8 @@ open class WebDavClient(
     protected open val propFind = PropFindHandler(webClient)
 
     protected open val uploadFile = UploadFileCommand(webClient)
+
+    protected open val deleteFile = DeleteFileCommand(webClient)
 
 
     /**
@@ -61,5 +64,10 @@ open class WebDavClient(
      */
     open suspend fun uploadFile(destinationUrl: String, fileContent: ByteArray, options: UploadFileOptions? = null) =
         uploadFile.uploadFile(destinationUrl, fileContent, options)
+
+    /**
+     * Deletes the file or directory identified by [fileUrl].
+     */
+    open suspend fun deleteFile(fileUrl: String) = deleteFile.deleteFile(fileUrl)
 
 }
