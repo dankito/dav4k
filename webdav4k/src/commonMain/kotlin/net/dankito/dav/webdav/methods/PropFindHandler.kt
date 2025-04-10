@@ -2,6 +2,7 @@ package net.dankito.dav.webdav.methods
 
 import io.ktor.http.*
 import net.dankito.dav.web.*
+import net.dankito.dav.webdav.model.Property
 
 open class PropFindHandler(
     protected val webClient: WebClient,
@@ -38,6 +39,41 @@ open class PropFindHandler(
      * Return just the property names (no values).
      */
     open suspend fun propName(url: String, depth: Int = DefaultDepth) = makeRequest(url, depth, PropNameBody)
+
+    /**
+     * Returns only the listed properties.
+     */
+    open suspend fun prop(url: String, vararg props: Property) = prop(url, DefaultDepth, *props)
+
+    /**
+     * Returns only the listed properties.
+     */
+    open suspend fun prop(url: String, depth: Int = DefaultDepth, vararg props: Property) =
+        makeRequest(url, depth, createPropBody(props.toList()))
+
+    protected open fun createPropBody(properties: List<Property>): String {
+        val namespaces = properties.associate { it.namespaceURI to (it.prefix ?: getDefaultNamespacePrefix(it.namespaceURI)) }
+            .toMutableMap().apply { put("DAV:", "d") }
+        // TODO: what to use when prefix is null? Throw an exception?
+        val namespaceList = namespaces.entries.joinToString(" ") { "xmlns:${it.value}=\"${it.key}\"" }
+
+        // TODO: create with an XML library
+        return """
+            <d:propfind $namespaceList>
+              <d:prop>
+                ${properties.joinToString("\n") { "<${namespaces[it.namespaceURI]}:${it.name} />" } }
+              </d:prop>
+            </d:propfind>
+        """.trimIndent()
+    }
+
+    protected open fun getDefaultNamespacePrefix(namespaceURI: String?): String? = when (namespaceURI) {
+        "http://sabredav.org/ns" -> "s"
+        "http://owncloud.org/ns" -> "oc"
+        "http://open-collaboration-services.org/ns" -> "ocs"
+        "http://open-cloud-mesh.org/ns" -> "ocm"
+        else -> null
+    }
 
 
     protected open suspend fun makeRequest(url: String, depth: Int, body: String?): String? {
