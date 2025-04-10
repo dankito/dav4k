@@ -130,22 +130,18 @@ open class MultiStatusReader {
     protected open fun readStatus(reader: XmlReader): Status? = try {
         val statusLine = readText(reader)
 
-        // the status line has this format:
-        // HTTP/<version> <status-code> <reason-phrase>
-        if (statusLine == null || statusLine.startsWith("HTTP/", true) == false) {
+        if (statusLine == null) {
             null
         } else {
-            val firstWhitespace = statusLine.indexOf(' ')
-            if (firstWhitespace < 0) {
+            // the status line has this format:
+            // HTTP/<version> <status-code> <reason-phrase>
+            val parts = statusLine.split(' ', limit = 3).map { it.trim() }
+            if (parts.size != 3) { // cannot parse statusLine then
                 Status(statusLine)
             } else {
-                val secondWhitespace = statusLine.indexOf(' ', firstWhitespace + 1)
-                if (secondWhitespace < 0 || statusLine.substring(firstWhitespace, secondWhitespace).trim().toIntOrNull() == null) {
-                    Status(statusLine)
-                } else {
-                    val httpVersion = statusLine.substring(5, firstWhitespace).trim()
-                    Status(statusLine, httpVersion, statusLine.substring(firstWhitespace, secondWhitespace).trim().toInt(), statusLine.substring(secondWhitespace).trim())
-                }
+                val httpVersion = if (parts[0].startsWith("HTTP/", true)) parts[0].substring(4) else null
+                val httpStatusCode = parts[1].toIntOrNull()
+                Status(statusLine, httpVersion, httpStatusCode, parts[2])
             }
         }
     } catch (e: Throwable) {
