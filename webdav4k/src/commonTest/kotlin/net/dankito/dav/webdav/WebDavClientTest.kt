@@ -87,9 +87,6 @@ class WebDavClientTest {
 
     @Test
     fun downloadFile() = runTest {
-        val fileUrl = "/test.txt"
-        val fileContent = "Hallo Stasi,\nich liebe dich!"
-
         val uploadResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
         assertThat(uploadResult).isTrue()
@@ -105,9 +102,6 @@ class WebDavClientTest {
 
     @Test
     fun uploadFile() = runTest {
-        val fileUrl = "/test.txt"
-        val fileContent = "Hallo Stasi,\nich liebe dich!"
-
         val result = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
         assertThat(result).isTrue()
@@ -125,8 +119,6 @@ class WebDavClientTest {
 
     @Test
     fun deleteFile() = runTest {
-        val fileUrl = "/test.txt"
-
         val uploadResult = localWebDavClient.uploadFile(fileUrl, "Any content".encodeToByteArray(), UploadFileOptions("text/plain", true))
 
         assertThat(uploadResult).isTrue()
@@ -151,10 +143,36 @@ class WebDavClientTest {
     }
 
     @Test
+    fun copyFile() = runTest {
+        val uploadFileResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
+
+        assertThat(uploadFileResult).isTrue()
+
+
+        val result = localWebDavClient.copyFile(fileUrl, destinationFileUrl, true)
+
+        assertThat(result).isTrue()
+
+
+        localWebDavClient.deleteFileOrDirectory(fileUrl)
+
+        localWebDavClient.deleteFileOrDirectory(destinationFileUrl)
+    }
+
+    @Test
     fun localWebDav() = runTest {
         val result = localWebDavClient.list("/")
 
         assertThat(result).isNotNull()
+    }
+
+
+    companion object {
+        private const val fileUrl = "/test.txt"
+
+        private const val destinationFileUrl = "/copy.txt"
+
+        private const val fileContent = "Hallo Stasi,\nich liebe dich!"
     }
 
 }

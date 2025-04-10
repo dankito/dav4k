@@ -24,6 +24,8 @@ open class WebDavClient(
 
     protected open val deleteFile = DeleteFileCommand(webClient)
 
+    protected open val copyFile = CopyFileCommand(webClient)
+
 
     /**
      * Lists the properties of the resource specified by [url].
@@ -81,5 +83,13 @@ open class WebDavClient(
      * Deletes the file or directory identified by [fileUrl].
      */
     open suspend fun deleteFileOrDirectory(fileUrl: String) = deleteFile.deleteFile(fileUrl)
+
+    /**
+     * Copies a file from [sourceUrl] to [destinationUrl].
+     *
+     * Set [overwrite] to `true` to overwrite [destinationUrl] if it exists.
+     */
+    open suspend fun copyFile(sourceUrl: String, destinationUrl: String, overwrite: Boolean = false) =
+        copyFile.copy(sourceUrl, destinationUrl, overwrite)
 
 }
