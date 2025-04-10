@@ -26,6 +26,8 @@ open class WebDavClient(
 
     protected open val copyFile = CopyFileCommand(webClient)
 
+    protected open val moveFile = MoveFileCommand(webClient)
+
 
     /**
      * Lists the properties of the resource specified by [url].
@@ -91,5 +93,13 @@ open class WebDavClient(
      */
     open suspend fun copyFile(sourceUrl: String, destinationUrl: String, overwrite: Boolean = false) =
         copyFile.copy(sourceUrl, destinationUrl, overwrite)
+
+    /**
+     * Moves a file from [sourceUrl] to [destinationUrl].
+     *
+     * Set [overwrite] to `true` to overwrite [destinationUrl] if it exists.
+     */
+    open suspend fun moveFile(sourceUrl: String, destinationUrl: String, overwrite: Boolean = false) =
+        moveFile.move(sourceUrl, destinationUrl, overwrite)
 
 }
