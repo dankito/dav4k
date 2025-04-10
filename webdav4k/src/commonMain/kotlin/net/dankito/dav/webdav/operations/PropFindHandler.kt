@@ -3,10 +3,12 @@ package net.dankito.dav.webdav.operations
 import io.ktor.http.*
 import net.dankito.dav.DefaultNamespaces
 import net.dankito.dav.web.*
+import net.dankito.dav.webdav.model.MultiStatus
 import net.dankito.dav.webdav.model.Property
 
 open class PropFindHandler(
     protected val webClient: WebClient,
+    protected val multiStatusReader: MultiStatusReader = MultiStatusReader.Instance
 ) {
 
     companion object {
@@ -53,7 +55,7 @@ open class PropFindHandler(
         makeRequest(url, depth, createPropBody(props.toList()))
 
     protected open fun createPropBody(properties: List<Property>): String {
-        val namespaces = properties.associate { it.namespaceURI to (it.prefix ?: getDefaultNamespacePrefix(it.namespaceURI)) }
+        val namespaces = properties.associate { it.namespaceUri to (it.prefix ?: getDefaultNamespacePrefix(it.namespaceUri)) }
             .toMutableMap().apply { put(DefaultNamespaces.Dav, DefaultNamespaces.DavPrefix) }
         // TODO: what to use when prefix is null? Throw an exception?
         val namespaceList = namespaces.entries.joinToString(" ") { "xmlns:${it.value}=\"${it.key}\"" }
@@ -62,7 +64,7 @@ open class PropFindHandler(
         return """
             <d:propfind $namespaceList>
               <d:prop>
-                ${properties.joinToString("\n") { "<${namespaces[it.namespaceURI]}:${it.name} />" } }
+                ${properties.joinToString("\n") { "<${namespaces[it.namespaceUri]}:${it.name} />" } }
               </d:prop>
             </d:propfind>
         """.trimIndent()
@@ -72,7 +74,7 @@ open class PropFindHandler(
         namespaceUri?.let { DefaultNamespaces.getPrefixForNamespace(namespaceUri) }
 
 
-    protected open suspend fun makeRequest(url: String, depth: Int, body: String?): String? {
+    protected open suspend fun makeRequest(url: String, depth: Int, body: String?): MultiStatus? {
         val request = RequestParameters(url, String::class, body, ContentTypes.XML, ContentTypes.XML, mapOf(
             "DEPTH" to if (depth in 0 until Int.MAX_VALUE) depth.toString() else "infinity"
         ))
@@ -80,7 +82,11 @@ open class PropFindHandler(
         val response = if (webClient is KtorWebClient) webClient.custom(PropFindHttpMethod, request)
                         else webClient.custom(PropFindHttpMethod.value, request)
 
-        return response.body
+        return if (response.isSuccessResponse) {
+            multiStatusReader.parse(response.body!!)
+        } else {
+            null // TODO: return error
+        }
     }
 
 }

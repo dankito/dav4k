@@ -4,8 +4,11 @@ import net.dankito.dav.DefaultNamespaces
 
 data class Property(
     val name: String,
-    val namespaceURI: String? = null,
-    val prefix: String? = null
+    val namespaceUri: String? = null,
+    val prefix: String? = null,
+
+    val value: String? = null,
+    val children: List<Property> = emptyList(),
 ) {
     companion object {
         fun davProperty(name: String) = Property(name, DefaultNamespaces.Dav, DefaultNamespaces.DavPrefix)

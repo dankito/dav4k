@@ -1,0 +1,104 @@
+<d:multistatus xmlns:s="http://sabredav.org/ns" xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
+    <d:response>
+        <d:href>/remote.php/dav/spaces/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe/
+        </d:href>
+        <d:propstat>
+            <d:prop>
+                <oc:permissions>RDNVCKZP</oc:permissions>
+                <oc:favorite>0</oc:favorite>
+                <oc:fileid>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe
+                </oc:fileid>
+                <oc:owner-id>admin</oc:owner-id>
+                <oc:owner-display-name>Admin</oc:owner-display-name>
+                <oc:privatelink>
+                    https://files.dankito.net/f/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe%216f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe
+                </oc:privatelink>
+                <oc:size>49</oc:size>
+                <d:getlastmodified>Wed, 09 Apr 2025 08:52:46 GMT</d:getlastmodified>
+                <d:getetag>"26c7d4af14a1b5b7a91eb64eb020a42b"</d:getetag>
+                <d:resourcetype>
+                    <d:collection/>
+                </d:resourcetype>
+            </d:prop>
+            <d:status>HTTP/1.1 200 OK</d:status>
+        </d:propstat>
+        <d:propstat>
+            <d:prop>
+                <oc:share-types></oc:share-types>
+                <d:getcontentlength></d:getcontentlength>
+                <d:getcontenttype></d:getcontenttype>
+                <oc:downloadURL></oc:downloadURL>
+            </d:prop>
+            <d:status>HTTP/1.1 404 Not Found</d:status>
+        </d:propstat>
+    </d:response>
+    <d:response>
+        <d:href>
+            /remote.php/dav/spaces/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe/README.md
+        </d:href>
+        <d:propstat>
+            <d:prop>
+                <oc:permissions>RDNVWZP</oc:permissions>
+                <oc:favorite>0</oc:favorite>
+                <oc:fileid>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!697c779b-b2d0-4e6b-b844-f3860cd78929
+                </oc:fileid>
+                <oc:owner-id>admin</oc:owner-id>
+                <oc:owner-display-name>Admin</oc:owner-display-name>
+                <oc:privatelink>
+                    https://files.dankito.net/f/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe%21697c779b-b2d0-4e6b-b844-f3860cd78929
+                </oc:privatelink>
+                <d:getcontentlength>49</d:getcontentlength>
+                <oc:size>49</oc:size>
+                <d:getlastmodified>Wed, 09 Apr 2025 08:52:28 GMT</d:getlastmodified>
+                <d:getetag>"f18db2265c3eaa0671d82c5dce6843a6"</d:getetag>
+                <d:getcontenttype>text/markdown</d:getcontenttype>
+                <d:resourcetype></d:resourcetype>
+            </d:prop>
+            <d:status>HTTP/1.1 200 OK</d:status>
+        </d:propstat>
+        <d:propstat>
+            <d:prop>
+                <oc:share-types></oc:share-types>
+                <oc:downloadURL></oc:downloadURL>
+            </d:prop>
+            <d:status>HTTP/1.1 404 Not Found</d:status>
+        </d:propstat>
+    </d:response>
+    <d:response>
+        <d:href>
+            /remote.php/dav/spaces/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe/Spektakul%C3%A4re%20Dokumente/
+        </d:href>
+        <d:propstat>
+            <d:prop>
+                <oc:permissions>RDNVCKZP</oc:permissions>
+                <oc:favorite>0</oc:favorite>
+                <oc:fileid>
+                    cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe!45128509-55bf-40dd-a714-b15102cabc91
+                </oc:fileid>
+                <oc:owner-id>admin</oc:owner-id>
+                <oc:owner-display-name>Admin</oc:owner-display-name>
+                <oc:privatelink>
+                    https://files.dankito.net/f/cb7e504b-d254-4643-9f5b-c51ad4743938$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe%2145128509-55bf-40dd-a714-b15102cabc91
+                </oc:privatelink>
+                <oc:size>0</oc:size>
+                <d:getlastmodified>Wed, 09 Apr 2025 08:52:46 GMT</d:getlastmodified>
+                <d:getetag>"0a250057fe63fda3f6cdaf6dfd627c3c"</d:getetag>
+                <d:resourcetype>
+                    <d:collection/>
+                </d:resourcetype>
+            </d:prop>
+            <d:status>HTTP/1.1 200 OK</d:status>
+        </d:propstat>
+        <d:propstat>
+            <d:prop>
+                <oc:share-types></oc:share-types>
+                <d:getcontentlength></d:getcontentlength>
+                <d:getcontenttype></d:getcontenttype>
+                <oc:downloadURL></oc:downloadURL>
+            </d:prop>
+            <d:status>HTTP/1.1 404 Not Found</d:status>
+        </d:propstat>
+    </d:response>
+</d:multistatus>

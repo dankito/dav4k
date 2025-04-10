@@ -1,6 +1,8 @@
 package net.dankito.dav.webdav
 
 import assertk.assertThat
+import assertk.assertions.hasSize
+import assertk.assertions.isIn
 import assertk.assertions.isNotNull
 import kotlinx.coroutines.test.runTest
 import net.dankito.dav.webdav.model.Property
@@ -13,14 +15,29 @@ class WebDavClientTest {
 
     @Test
     fun list_DefaultProperties() = runTest {
-        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe")
+        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", 1)
 
         assertThat(result).isNotNull()
+        assertThat(result!!.responses).hasSize(3)
+
+        result.responses.forEach { response ->
+            assertThat(response.href).hasSize(1)
+            assertThat(response.propStats).hasSize(2)
+
+            val successResponse = response.propStats.first { it.status?.isSuccess == true }
+            assertThat(successResponse).isNotNull()
+            assertThat(successResponse.properties.size).isIn(13, 15)
+
+            // some properties don't exist
+            val notFoundResponse = response.propStats.first { it.status?.httpStatusCode == 404 }
+            assertThat(notFoundResponse).isNotNull()
+            assertThat(notFoundResponse.properties.size).isIn(4)
+        }
     }
 
     @Test
     fun list_SpecifyWhichPropertiesToReturn() = runTest {
-        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe",
+        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", 1,
             // builds this ownCloud example: https://owncloud.dev/apis/http/webdav/#listing-properties
             Property.ownCloudProperty("permissions"), Property.ownCloudProperty("favorite"),
             Property.ownCloudProperty("fileid"),
@@ -34,6 +51,21 @@ class WebDavClientTest {
         )
 
         assertThat(result).isNotNull()
+        assertThat(result!!.responses).hasSize(3)
+
+        result.responses.forEach { response ->
+            assertThat(response.href).hasSize(1)
+            assertThat(response.propStats).hasSize(2)
+
+            val successResponse = response.propStats.first { it.status?.isSuccess == true }
+            assertThat(successResponse).isNotNull()
+            assertThat(successResponse.properties.size).isIn(10, 12)
+
+            // some properties don't exist
+            val notFoundResponse = response.propStats.first { it.status?.httpStatusCode == 404 }
+            assertThat(notFoundResponse).isNotNull()
+            assertThat(notFoundResponse.properties.size).isIn(2, 4)
+        }
     }
 
 }
