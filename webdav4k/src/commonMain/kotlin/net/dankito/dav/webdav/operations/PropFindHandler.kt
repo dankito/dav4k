@@ -1,4 +1,4 @@
-package net.dankito.dav.webdav.methods
+package net.dankito.dav.webdav.operations
 
 import io.ktor.http.*
 import net.dankito.dav.web.*

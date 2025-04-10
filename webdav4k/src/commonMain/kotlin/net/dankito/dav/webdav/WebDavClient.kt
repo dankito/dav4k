@@ -4,7 +4,7 @@ import net.dankito.dav.web.KtorWebClient
 import net.dankito.dav.web.WebClient
 import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Property
-import net.dankito.dav.webdav.methods.PropFindHandler
+import net.dankito.dav.webdav.operations.PropFindHandler
 
 open class WebDavClient(
     webClient: WebClient,
