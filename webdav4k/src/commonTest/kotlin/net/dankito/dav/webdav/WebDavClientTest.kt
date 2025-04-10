@@ -168,9 +168,7 @@ class WebDavClientTest {
 
         localWebDavClient.deleteFileOrDirectory(destinationFileUrl)
 
-        val filesOnServerAfter = localWebDavClient.list(fileUrl)
-
-        assertThat(filesOnServerAfter).isNull()
+        assertIsDeleted(fileUrl)
     }
 
     @Test
@@ -209,12 +207,15 @@ class WebDavClientTest {
 
 
     private suspend fun assertIsDeleted(fileUrl: String) {
-        val filesOnServerAfter = localWebDavClient.list(fileUrl)
+        val fileOnServer = localWebDavClient.list(fileUrl)
 
-        assertThat(filesOnServerAfter).isNotNull()
-        // hm, the WebDAV server i use still returns the file, which is not conformant to standard, it just sets its contentlength to 0
-        assertThat(filesOnServerAfter!!.responses).hasSize(1)
-        assertThat(filesOnServerAfter.responses.first().propStats.first().properties.first { it.name == "getcontentlength" }.value).isEqualTo("0")
+        if (fileOnServer == null) {
+            assertThat(fileOnServer).isNull()
+        } else {
+            // hm, the WebDAV server i use still returns the file, which is not conformant to standard, it just sets its contentlength to 0
+            assertThat(fileOnServer!!.responses).hasSize(1)
+            assertThat(fileOnServer.responses.first().propStats.first().properties.first { it.name == "getcontentlength" }.value).isEqualTo("0")
+        }
     }
 
 
