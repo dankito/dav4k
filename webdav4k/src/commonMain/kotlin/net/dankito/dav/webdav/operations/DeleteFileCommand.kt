@@ -6,7 +6,7 @@ import net.dankito.dav.webdav.options.UploadFileOptions
 
 open class DeleteFileCommand(webClient: WebClient) : CommandBase(webClient) {
 
-    open suspend fun deleteFile(fileUrl: String, options: UploadFileOptions? = null): Boolean {
+    open suspend fun deleteFile(fileUrl: String): Boolean {
         val request = RequestParameters(fileUrl, Unit::class)
 
         val response = webClient.delete(request)
