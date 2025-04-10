@@ -10,6 +10,11 @@ open class PropFindHandler(
     companion object {
         val PropFindHttpMethod = HttpMethod("PROPFIND")
 
+        /**
+         * The default is to return only the resource specified by url.
+         */
+        val DefaultDepth = 0
+
         val AllPropBody = """
             <d:propfind xmlns:d="DAV:">
               <d:allprop/>
@@ -25,17 +30,17 @@ open class PropFindHandler(
 
 
     /**
-     * Returns all standard / DAV-defined properties
+     * Returns all standard / DAV-defined properties.
      */
-    open suspend fun allProp(url: String, depth: Int = 1) = makeRequest(url, depth, AllPropBody)
+    open suspend fun allProp(url: String, depth: Int = DefaultDepth) = makeRequest(url, depth, AllPropBody)
 
     /**
-     * Return just the property names (no values)
+     * Return just the property names (no values).
      */
-    open suspend fun propName(url: String, depth: Int = 1) = makeRequest(url, depth, PropNameBody)
+    open suspend fun propName(url: String, depth: Int = DefaultDepth) = makeRequest(url, depth, PropNameBody)
 
 
-    protected open suspend fun makeRequest(url: String, depth: Int = 1, body: String?): String? {
+    protected open suspend fun makeRequest(url: String, depth: Int, body: String?): String? {
         val request = RequestParameters(url, String::class, body, ContentTypes.XML, ContentTypes.XML, mapOf(
             "DEPTH" to if (depth in 0 until Int.MAX_VALUE) depth.toString() else "infinity"
         ))
