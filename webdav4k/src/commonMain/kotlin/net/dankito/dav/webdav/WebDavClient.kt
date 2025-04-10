@@ -5,6 +5,8 @@ import net.dankito.dav.web.WebClient
 import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.operations.PropFindHandler
+import net.dankito.dav.webdav.operations.UploadFileCommand
+import net.dankito.dav.webdav.options.UploadFileOptions
 
 open class WebDavClient(
     webClient: WebClient,
@@ -13,7 +15,9 @@ open class WebDavClient(
     constructor(webDavUrl: String, credentials: Credentials? = null) : this(KtorWebClient(webDavUrl, credentials))
 
 
-    protected open val propFindHandler = PropFindHandler(webClient)
+    protected open val propFind = PropFindHandler(webClient)
+
+    protected open val uploadFile = UploadFileCommand(webClient)
 
 
     /**
@@ -46,7 +50,16 @@ open class WebDavClient(
      * which properties to return for each resource.
      */
     open suspend fun list(url: String, depth: Int = PropFindHandler.DefaultDepth, vararg props: Property) =
-        if (props.isEmpty()) propFindHandler.allProp(url, depth)
-        else propFindHandler.prop(url, depth, *props)
+        if (props.isEmpty()) propFind.allProp(url, depth)
+        else propFind.prop(url, depth, *props)
+
+
+    /**
+     * Uploads a file to [destinationUrl]. Ensure that all intermediate folders exist on server.
+     *
+     * [UploadFileOptions.overwrite] currently does not work.
+     */
+    open suspend fun uploadFile(destinationUrl: String, fileContent: ByteArray, options: UploadFileOptions? = null) =
+        uploadFile.uploadFile(destinationUrl, fileContent, options)
 
 }

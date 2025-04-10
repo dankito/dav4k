@@ -4,13 +4,17 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isIn
 import assertk.assertions.isNotNull
+import assertk.assertions.isTrue
 import kotlinx.coroutines.test.runTest
 import net.dankito.dav.webdav.model.Property
+import net.dankito.dav.webdav.options.UploadFileOptions
 import kotlin.test.Test
 
 class WebDavClientTest {
 
     private val underTest = WebDavClient(TestCredentials.createWebClient())
+
+    private val localWebDavClient = WebDavClient("http://localhost:6065")
 
 
     @Test
@@ -66,6 +70,31 @@ class WebDavClientTest {
             assertThat(notFoundResponse).isNotNull()
             assertThat(notFoundResponse.properties.size).isIn(2, 4)
         }
+    }
+
+
+    @Test
+    fun uploadFile() = runTest {
+        val fileUrl = "/test.txt"
+        val fileContent = "Hallo Stasi,\nich liebe dich!"
+
+        val result = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
+
+        assertThat(result).isTrue()
+
+
+        val filesOnServer = localWebDavClient.list(fileUrl)
+
+        assertThat(filesOnServer).isNotNull()
+        assertThat(filesOnServer!!.responses).hasSize(1)
+        // TODO: store test start time and check if lastUpdateTime is after test start time
+    }
+
+    @Test
+    fun localWebDav() = runTest {
+        val result = localWebDavClient.list("/")
+
+        assertThat(result).isNotNull()
     }
 
 }
