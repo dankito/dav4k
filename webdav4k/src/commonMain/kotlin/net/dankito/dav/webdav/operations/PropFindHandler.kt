@@ -7,9 +7,9 @@ import net.dankito.dav.webdav.model.MultiStatus
 import net.dankito.dav.webdav.model.Property
 
 open class PropFindHandler(
-    protected val webClient: WebClient,
+    webClient: WebClient,
     protected val multiStatusReader: MultiStatusReader = MultiStatusReader.Instance
-) {
+) : CommandBase(webClient) {
 
     companion object {
         val PropFindHttpMethod = HttpMethod("PROPFIND")
@@ -79,8 +79,7 @@ open class PropFindHandler(
             "DEPTH" to if (depth in 0 until Int.MAX_VALUE) depth.toString() else "infinity"
         ))
 
-        val response = if (webClient is KtorWebClient) webClient.custom(PropFindHttpMethod, request)
-                        else webClient.custom(PropFindHttpMethod.value, request)
+        val response = executeCustomRequest(request)
 
         return if (response.isSuccessResponse) {
             multiStatusReader.parse(response.body!!)
