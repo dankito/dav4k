@@ -11,6 +11,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.*
+import io.ktor.utils.io.charsets.*
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
@@ -94,7 +95,7 @@ open class KtorWebClient(
         } catch (e: Throwable) {
             log.error(e) { "Error during request to ${method.value} ${parameters.url}" }
             // be aware this might not be the absolute url but only the relative url the user has passed to WebClient
-            WebClientResponse(false, parameters.url, error = WebClientException(-1, emptyMap(), e.message ?: "", e))
+            WebClientResponse(false, parameters.url, error = WebClientException(e.message ?: "", e))
         }
     }
 
@@ -141,21 +142,23 @@ open class KtorWebClient(
     }
 
     protected open suspend fun <T : Any> mapHttResponse(method: HttpMethod, parameters: RequestParameters<T>, httpResponse: HttpResponse): WebClientResponse<T> {
-        val statusCode = httpResponse.status.value
         val headers = httpResponse.headers.toMap()
         val url = httpResponse.request.url.toString()
+        val responseDetails = ResponseDetails(httpResponse.status.value, httpResponse.status.description, httpResponse.requestTime, httpResponse.responseTime,
+            httpResponse.version.name, headers, httpResponse.contentType()?.withoutParameters()?.toString(),
+            httpResponse.contentLength(), httpResponse.charset()?.name)
 
         return if (httpResponse.status.isSuccess()) {
             try {
-                WebClientResponse(true, url, statusCode, headers, body = decodeResponse(parameters, httpResponse))
+                WebClientResponse(true, url, responseDetails, body = decodeResponse(parameters, httpResponse))
             } catch (e: Throwable) {
                 log.error(e) { "Error while mapping response of: ${method.value} ${httpResponse.request.url}, ${httpResponse.headers.toMap()}" }
-                WebClientResponse(true, url, statusCode, headers, WebClientException(statusCode, headers, e.message ?: "", e))
+                WebClientResponse(true, url, responseDetails, WebClientException(e.message ?: "", e, responseDetails))
             }
         } else {
             val responseBody = httpResponse.bodyAsText()
 
-            WebClientResponse(false, url, statusCode, headers, WebClientException(statusCode, headers, responseBody))
+            WebClientResponse(false, url, responseDetails, WebClientException(responseBody, null, responseDetails))
         }
     }
 
