@@ -1,5 +1,6 @@
 package net.dankito.dav.webdav.operations
 
+import io.ktor.http.*
 import net.codinux.log.logger
 import net.dankito.dav.serialization.*
 import net.dankito.dav.webdav.model.*
@@ -163,11 +164,14 @@ open class MultiStatusReader {
 
     protected open fun readText(reader: XmlReader): String? =
         if (reader.eventType == EventType.TEXT) {
-            reader.text
+            decode(reader.text)
         } else if (reader.nextIsText()) {
-            reader.text
+            decode(reader.text)
         } else {
             null
         }
+
+    // decoded URL encoded values, e.g. "%20" -> " ", is important for URLs
+    protected open fun decode(text: String): String = text.decodeURLPart()
 
 }
