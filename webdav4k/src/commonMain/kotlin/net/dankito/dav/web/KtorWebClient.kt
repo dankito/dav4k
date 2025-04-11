@@ -20,7 +20,8 @@ import net.dankito.dav.web.credentials.Credentials
 open class KtorWebClient(
     baseUrl: String? = null,
     credentials: Credentials? = null,
-    defaultUserAgent: String? = RequestParameters.DefaultMobileUserAgent
+    defaultUserAgent: String? = RequestParameters.DefaultMobileUserAgent,
+    protected val defaultContentType: String = ContentTypes.JSON,
 ) : WebClient {
 
     protected open val json = Json {
@@ -132,7 +133,7 @@ open class KtorWebClient(
             }
 
             parameters.body?.let {
-                contentType(parameters.contentType?.let { ContentType.parse(it) } ?: ContentType.Application.Json)
+                contentType((parameters.contentType ?: defaultContentType).let { ContentType.parse(it) })
 
                 setBody(it)
             }
