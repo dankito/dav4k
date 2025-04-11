@@ -25,6 +25,8 @@ data class Property(
 
     val isDavProperty = namespaceUri == DefaultNamespaces.Dav
 
+    override fun toString() = "${if (prefix != null) "$prefix:" else ""}$name = $value"
+
 
     /**
      * See https://www.rfc-editor.org/rfc/rfc4918#section-15
