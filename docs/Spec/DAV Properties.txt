@@ -1,0 +1,546 @@
+Source:
+https://www.rfc-editor.org/rfc/rfc4918#section-15
+
+
+15.  DAV Properties
+
+   For DAV properties, the name of the property is also the same as the
+   name of the XML element that contains its value.  In the section
+   below, the final line of each section gives the element type
+   declaration using the format defined in [REC-XML].  The "Value"
+   field, where present, specifies further restrictions on the allowable
+   contents of the XML element using BNF (i.e., to further restrict the
+   values of a PCDATA element).
+
+   A protected property is one that cannot be changed with a PROPPATCH
+   request.  There may be other requests that would result in a change
+   to a protected property (as when a LOCK request affects the value of
+   DAV:lockdiscovery).  Note that a given property could be protected on
+   one type of resource, but not protected on another type of resource.
+
+   A computed property is one with a value defined in terms of a
+   computation (based on the content and other properties of that
+   resource, or even of some other resource).  A computed property is
+   always a protected property.
+
+   COPY and MOVE behavior refers to local COPY and MOVE operations.
+
+   For properties defined based on HTTP GET response headers (DAV:get*),
+   the header value could include LWS as defined in [RFC2616], Section
+   4.2.  Server implementors SHOULD strip LWS from these values before
+   using as WebDAV property values.
+
+15.1.  creationdate Property
+
+   Name:   creationdate
+
+   Purpose:   Records the time and date the resource was created.
+
+   Value:   date-time (defined in [RFC3339], see the ABNF in Section
+      5.6.)
+
+   Protected:   MAY be protected.  Some servers allow DAV:creationdate
+      to be changed to reflect the time the document was created if that
+      is more meaningful to the user (rather than the time it was
+      uploaded).  Thus, clients SHOULD NOT use this property in
+      synchronization logic (use DAV:getetag instead).
+
+   COPY/MOVE behavior:   This property value SHOULD be kept during a
+      MOVE operation, but is normally re-initialized when a resource is
+      created with a COPY.  It should not be set in a COPY.
+
+   Description:   The DAV:creationdate property SHOULD be defined on all
+      DAV compliant resources.  If present, it contains a timestamp of
+      the moment when the resource was created.  Servers that are
+      incapable of persistently recording the creation date SHOULD
+      instead leave it undefined (i.e. report "Not Found").
+
+   <!ELEMENT creationdate (#PCDATA) >
+
+15.2.  displayname Property
+
+   Name:   displayname
+
+   Purpose:   Provides a name for the resource that is suitable for
+      presentation to a user.
+
+   Value:   Any text.
+
+   Protected:   SHOULD NOT be protected.  Note that servers implementing
+      [RFC2518] might have made this a protected property as this is a
+      new requirement.
+
+   COPY/MOVE behavior:   This property value SHOULD be preserved in COPY
+      and MOVE operations.
+
+   Description:   Contains a description of the resource that is
+      suitable for presentation to a user.  This property is defined on
+      the resource, and hence SHOULD have the same value independent of
+      the Request-URI used to retrieve it (thus, computing this property
+      based on the Request-URI is deprecated).  While generic clients
+      might display the property value to end users, client UI designers
+      must understand that the method for identifying resources is still
+      the URL.  Changes to DAV:displayname do not issue moves or copies
+      to the server, but simply change a piece of meta-data on the
+      individual resource.  Two resources can have the same DAV:
+      displayname value even within the same collection.
+
+   <!ELEMENT displayname (#PCDATA) >
+
+15.3.  getcontentlanguage Property
+
+   Name:   getcontentlanguage
+
+   Purpose:   Contains the Content-Language header value (from Section
+      14.12 of [RFC2616]) as it would be returned by a GET without
+      accept headers.
+
+   Value:   language-tag (language-tag is defined in Section 3.10 of
+      [RFC2616])
+
+   Protected:   SHOULD NOT be protected, so that clients can reset the
+      language.  Note that servers implementing [RFC2518] might have
+      made this a protected property as this is a new requirement.
+
+   COPY/MOVE behavior:   This property value SHOULD be preserved in COPY
+      and MOVE operations.
+
+   Description:   The DAV:getcontentlanguage property MUST be defined on
+      any DAV-compliant resource that returns the Content-Language
+      header on a GET.
+
+   <!ELEMENT getcontentlanguage (#PCDATA) >
+
+15.4.  getcontentlength Property
+
+   Name:   getcontentlength
+
+   Purpose:   Contains the Content-Length header returned by a GET
+      without accept headers.
+
+   Value:   See Section 14.13 of [RFC2616].
+
+   Protected:   This property is computed, therefore protected.
+
+   Description:   The DAV:getcontentlength property MUST be defined on
+      any DAV-compliant resource that returns the Content-Length header
+      in response to a GET.
+
+   COPY/MOVE behavior:   This property value is dependent on the size of
+      the destination resource, not the value of the property on the
+      source resource.
+
+   <!ELEMENT getcontentlength (#PCDATA) >
+
+15.5.  getcontenttype Property
+
+   Name:   getcontenttype
+
+   Purpose:   Contains the Content-Type header value (from Section 14.17
+      of [RFC2616]) as it would be returned by a GET without accept
+      headers.
+
+   Value:   media-type (defined in Section 3.7 of [RFC2616])
+
+   Protected:   Potentially protected if the server prefers to assign
+      content types on its own (see also discussion in Section 9.7.1).
+
+   COPY/MOVE behavior:   This property value SHOULD be preserved in COPY
+      and MOVE operations.
+
+   Description:   This property MUST be defined on any DAV-compliant
+      resource that returns the Content-Type header in response to a
+      GET.
+
+   <!ELEMENT getcontenttype (#PCDATA) >
+
+15.6.  getetag Property
+
+   Name:   getetag
+
+   Purpose:   Contains the ETag header value (from Section 14.19 of
+      [RFC2616]) as it would be returned by a GET without accept
+      headers.
+
+   Value:   entity-tag (defined in Section 3.11 of [RFC2616])
+
+   Protected:  MUST be protected because this value is created and
+      controlled by the server.
+
+   COPY/MOVE behavior:   This property value is dependent on the final
+      state of the destination resource, not the value of the property
+      on the source resource.  Also note the considerations in
+      Section 8.8.
+
+   Description:   The getetag property MUST be defined on any DAV-
+      compliant resource that returns the Etag header.  Refer to Section
+      3.11 of RFC 2616 for a complete definition of the semantics of an
+      ETag, and to Section 8.6 for a discussion of ETags in WebDAV.
+
+   <!ELEMENT getetag (#PCDATA) >
+
+15.7.  getlastmodified Property
+
+   Name:   getlastmodified
+
+   Purpose:   Contains the Last-Modified header value (from Section
+      14.29 of [RFC2616]) as it would be returned by a GET method
+      without accept headers.
+
+   Value:   rfc1123-date (defined in Section 3.3.1 of [RFC2616])
+
+   Protected:   SHOULD be protected because some clients may rely on the
+      value for appropriate caching behavior, or on the value of the
+      Last-Modified header to which this property is linked.
+
+
+   COPY/MOVE behavior:   This property value is dependent on the last
+      modified date of the destination resource, not the value of the
+      property on the source resource.  Note that some server
+      implementations use the file system date modified value for the
+      DAV:getlastmodified value, and this can be preserved in a MOVE
+      even when the HTTP Last-Modified value SHOULD change.  Note that
+      since [RFC2616] requires clients to use ETags where provided, a
+      server implementing ETags can count on clients using a much better
+      mechanism than modification dates for offline synchronization or
+      cache control.  Also note the considerations in Section 8.8.
+
+   Description:   The last-modified date on a resource SHOULD only
+      reflect changes in the body (the GET responses) of the resource.
+      A change in a property only SHOULD NOT cause the last-modified
+      date to change, because clients MAY rely on the last-modified date
+      to know when to overwrite the existing body.  The DAV:
+      getlastmodified property MUST be defined on any DAV-compliant
+      resource that returns the Last-Modified header in response to a
+      GET.
+
+   <!ELEMENT getlastmodified (#PCDATA) >
+
+15.8.  lockdiscovery Property
+
+   Name:   lockdiscovery
+
+   Purpose:   Describes the active locks on a resource
+
+   Protected:   MUST be protected.  Clients change the list of locks
+      through LOCK and UNLOCK, not through PROPPATCH.
+
+   COPY/MOVE behavior:   The value of this property depends on the lock
+      state of the destination, not on the locks of the source resource.
+      Recall that locks are not moved in a MOVE operation.
+
+   Description:   Returns a listing of who has a lock, what type of lock
+      he has, the timeout type and the time remaining on the timeout,
+      and the associated lock token.  Owner information MAY be omitted
+      if it is considered sensitive.  If there are no locks, but the
+      server supports locks, the property will be present but contain
+      zero 'activelock' elements.  If there are one or more locks, an
+      'activelock' element appears for each lock on the resource.  This
+      property is NOT lockable with respect to write locks (Section 7).
+
+   <!ELEMENT lockdiscovery (activelock)* >
+
+15.8.1.  Example - Retrieving DAV:lockdiscovery
+
+   >>Request
+
+     PROPFIND /container/ HTTP/1.1
+     Host: www.example.com
+     Content-Length: xxxx
+     Content-Type: application/xml; charset="utf-8"
+
+     <?xml version="1.0" encoding="utf-8" ?>
+     <D:propfind xmlns:D='DAV:'>
+       <D:prop><D:lockdiscovery/></D:prop>
+     </D:propfind>
+
+   >>Response
+
+     HTTP/1.1 207 Multi-Status
+     Content-Type: application/xml; charset="utf-8"
+     Content-Length: xxxx
+
+     <?xml version="1.0" encoding="utf-8" ?>
+     <D:multistatus xmlns:D='DAV:'>
+       <D:response>
+         <D:href>http://www.example.com/container/</D:href>
+         <D:propstat>
+           <D:prop>
+             <D:lockdiscovery>
+              <D:activelock>
+               <D:locktype><D:write/></D:locktype>
+               <D:lockscope><D:exclusive/></D:lockscope>
+               <D:depth>0</D:depth>
+               <D:owner>Jane Smith</D:owner>
+               <D:timeout>Infinite</D:timeout>
+               <D:locktoken>
+                 <D:href
+             >urn:uuid:f81de2ad-7f3d-a1b2-4f3c-00a0c91a9d76</D:href>
+               </D:locktoken>
+               <D:lockroot>
+                 <D:href>http://www.example.com/container/</D:href>
+               </D:lockroot>
+              </D:activelock>
+             </D:lockdiscovery>
+           </D:prop>
+           <D:status>HTTP/1.1 200 OK</D:status>
+         </D:propstat>
+       </D:response>
+     </D:multistatus>
+
+   This resource has a single exclusive write lock on it, with an
+   infinite timeout.
+
+15.9.  resourcetype Property
+
+   Name:   resourcetype
+
+   Purpose:   Specifies the nature of the resource.
+
+   Protected:   SHOULD be protected.  Resource type is generally decided
+      through the operation creating the resource (MKCOL vs PUT), not by
+      PROPPATCH.
+
+   COPY/MOVE behavior:   Generally a COPY/MOVE of a resource results in
+      the same type of resource at the destination.
+
+   Description:   MUST be defined on all DAV-compliant resources.  Each
+      child element identifies a specific type the resource belongs to,
+      such as 'collection', which is the only resource type defined by
+      this specification (see Section 14.3).  If the element contains
+      the 'collection' child element plus additional unrecognized
+      elements, it should generally be treated as a collection.  If the
+      element contains no recognized child elements, it should be
+      treated as a non-collection resource.  The default value is empty.
+      This element MUST NOT contain text or mixed content.  Any custom
+      child element is considered to be an identifier for a resource
+      type.
+
+   Example: (fictional example to show extensibility)
+
+       <x:resourcetype xmlns:x="DAV:">
+           <x:collection/>
+           <f:search-results xmlns:f="http://www.example.com/ns"/>
+       </x:resourcetype>
+
+15.10.  supportedlock Property
+
+   Name:   supportedlock
+
+   Purpose:   To provide a listing of the lock capabilities supported by
+      the resource.
+
+   Protected:   MUST be protected.  Servers, not clients, determine what
+      lock mechanisms are supported.
+
+   COPY/MOVE behavior:   This property value is dependent on the kind of
+      locks supported at the destination, not on the value of the
+      property at the source resource.  Servers attempting to COPY to a
+      destination should not attempt to set this property at the
+      destination.
+
+   Description:   Returns a listing of the combinations of scope and
+      access types that may be specified in a lock request on the
+      resource.  Note that the actual contents are themselves controlled
+      by access controls, so a server is not required to provide
+      information the client is not authorized to see.  This property is
+      NOT lockable with respect to write locks (Section 7).
+
+   <!ELEMENT supportedlock (lockentry)* >
+
+15.10.1.  Example - Retrieving DAV:supportedlock
+
+   >>Request
+
+     PROPFIND /container/ HTTP/1.1
+     Host: www.example.com
+     Content-Length: xxxx
+     Content-Type: application/xml; charset="utf-8"
+
+     <?xml version="1.0" encoding="utf-8" ?>
+     <D:propfind xmlns:D="DAV:">
+       <D:prop><D:supportedlock/></D:prop>
+     </D:propfind>
+
+   >>Response
+
+     HTTP/1.1 207 Multi-Status
+     Content-Type: application/xml; charset="utf-8"
+     Content-Length: xxxx
+
+     <?xml version="1.0" encoding="utf-8" ?>
+     <D:multistatus xmlns:D="DAV:">
+       <D:response>
+         <D:href>http://www.example.com/container/</D:href>
+         <D:propstat>
+           <D:prop>
+             <D:supportedlock>
+               <D:lockentry>
+                 <D:lockscope><D:exclusive/></D:lockscope>
+                 <D:locktype><D:write/></D:locktype>
+               </D:lockentry>
+               <D:lockentry>
+                 <D:lockscope><D:shared/></D:lockscope>
+                 <D:locktype><D:write/></D:locktype>
+               </D:lockentry>
+             </D:supportedlock>
+           </D:prop>
+           <D:status>HTTP/1.1 200 OK</D:status>
+         </D:propstat>
+       </D:response>
+     </D:multistatus>
+
+16.  Precondition/Postcondition XML Elements
+
+   As introduced in Section 8.7, extra information on error conditions
+   can be included in the body of many status responses.  This section
+   makes requirements on the use of the error body mechanism and
+   introduces a number of precondition and postcondition codes.
+
+   A "precondition" of a method describes the state of the server that
+   must be true for that method to be performed.  A "postcondition" of a
+   method describes the state of the server that must be true after that
+   method has been completed.
+
+   Each precondition and postcondition has a unique XML element
+   associated with it.  In a 207 Multi-Status response, the XML element
+   MUST appear inside an 'error' element in the appropriate 'propstat or
+   'response' element depending on whether the condition applies to one
+   or more properties or to the resource as a whole.  In all other error
+   responses where this specification's 'error' body is used, the
+   precondition/postcondition XML element MUST be returned as the child
+   of a top-level 'error' element in the response body, unless otherwise
+   negotiated by the request, along with an appropriate response status.
+   The most common response status codes are 403 (Forbidden) if the
+   request should not be repeated because it will always fail, and 409
+   (Conflict) if it is expected that the user might be able to resolve
+   the conflict and resubmit the request.  The 'error' element MAY
+   contain child elements with specific error information and MAY be
+   extended with any custom child elements.
+
+   This mechanism does not take the place of using a correct numeric
+   status code as defined here or in HTTP, because the client must
+   always be able to take a reasonable course of action based only on
+   the numeric code.  However, it does remove the need to define new
+   numeric codes.  The new machine-readable codes used for this purpose
+   are XML elements classified as preconditions and postconditions, so
+   naturally, any group defining a new condition code can use their own
+   namespace.  As always, the "DAV:" namespace is reserved for use by
+   IETF-chartered WebDAV working groups.
+
+   A server supporting this specification SHOULD use the XML error
+   whenever a precondition or postcondition defined in this document is
+   violated.  For error conditions not specified in this document, the
+   server MAY simply choose an appropriate numeric status and leave the
+   response body blank.  However, a server MAY instead use a custom
+   condition code and other supporting text, because even when clients
+   do not automatically recognize condition codes, they can be quite
+   useful in interoperability testing and debugging.
+
+   Example - Response with precondition code
+
+   >>Response
+
+      HTTP/1.1 423 Locked
+      Content-Type: application/xml; charset="utf-8"
+      Content-Length: xxxx
+
+      <?xml version="1.0" encoding="utf-8" ?>
+      <D:error xmlns:D="DAV:">
+        <D:lock-token-submitted>
+          <D:href>/workspace/webdav/</D:href>
+        </D:lock-token-submitted>
+      </D:error>
+
+   In this example, a client unaware of a depth-infinity lock on the
+   parent collection "/workspace/webdav/" attempted to modify the
+   collection member "/workspace/webdav/proposal.doc".
+
+   Some other useful preconditions and postconditions have been defined
+   in other specifications extending WebDAV, such as [RFC3744] (see
+   particularly Section 7.1.1), [RFC3253], and [RFC3648].
+
+   All these elements are in the "DAV:" namespace.  If not specified
+   otherwise, the content for each condition's XML element is defined to
+   be empty.
+
+
+   Name:  lock-token-matches-request-uri
+
+   Use with:  409 Conflict
+
+   Purpose:  (precondition) -- A request may include a Lock-Token header
+      to identify a lock for the UNLOCK method.  However, if the
+      Request-URI does not fall within the scope of the lock identified
+      by the token, the server SHOULD use this error.  The lock may have
+      a scope that does not include the Request-URI, or the lock could
+      have disappeared, or the token may be invalid.
+
+   Name:  lock-token-submitted (precondition)
+
+   Use with:  423 Locked
+
+   Purpose:  The request could not succeed because a lock token should
+      have been submitted.  This element, if present, MUST contain at
+      least one URL of a locked resource that prevented the request.  In
+      cases of MOVE, COPY, and DELETE where collection locks are
+      involved, it can be difficult for the client to find out which
+      locked resource made the request fail -- but the server is only
+      responsible for returning one such locked resource.  The server
+      MAY return every locked resource that prevented the request from
+      succeeding if it knows them all.
+
+   <!ELEMENT lock-token-submitted (href+) >
+
+
+   Name:  no-conflicting-lock (precondition)
+
+   Use with:  Typically 423 Locked
+
+   Purpose:  A LOCK request failed due the presence of an already
+      existing conflicting lock.  Note that a lock can be in conflict
+      although the resource to which the request was directed is only
+      indirectly locked.  In this case, the precondition code can be
+      used to inform the client about the resource that is the root of
+      the conflicting lock, avoiding a separate lookup of the
+      "lockdiscovery" property.
+
+   <!ELEMENT no-conflicting-lock (href)* >
+
+
+   Name:  no-external-entities
+
+   Use with:  403 Forbidden
+
+   Purpose:  (precondition) -- If the server rejects a client request
+      because the request body contains an external entity, the server
+      SHOULD use this error.
+
+
+   Name:  preserved-live-properties
+
+   Use with:  409 Conflict
+
+   Purpose:  (postcondition) -- The server received an otherwise-valid
+      MOVE or COPY request, but cannot maintain the live properties with
+      the same behavior at the destination.  It may be that the server
+
+      only supports some live properties in some parts of the
+      repository, or simply has an internal error.
+
+
+   Name:  propfind-finite-depth
+
+   Use with:  403 Forbidden
+
+   Purpose:  (precondition) -- This server does not allow infinite-depth
+      PROPFIND requests on collections.
+
+
+   Name:  cannot-modify-protected-property
+
+   Use with:  403 Forbidden
+
+   Purpose:  (precondition) -- The client attempted to set a protected
+      property in a PROPPATCH (such as DAV:getetag).  See also
+      [RFC3253], Section 3.12.
