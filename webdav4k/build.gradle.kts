@@ -137,3 +137,8 @@ kotlin {
         }
     }
 }
+
+
+if (File(projectDir, "../gradle/scripts/publish-dankito.gradle.kts").exists()) {
+    apply(from = "../gradle/scripts/publish-dankito.gradle.kts")
+}
