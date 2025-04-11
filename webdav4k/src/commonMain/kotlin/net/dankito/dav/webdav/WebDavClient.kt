@@ -64,6 +64,15 @@ open class WebDavClient(
         if (props.isEmpty()) propFind.allProp(url, depth)
         else propFind.prop(url, depth, *props)
 
+    /**
+     * Request a list of names of all the properties defined on the resource.
+     *
+     * But according to my experience does not work reliably. Some servers don't return any property names, others
+     * only a few. Haven't found any server that really returned all available property names of a resource.
+     */
+    open suspend fun getAvailablePropertyNames(url: String, depth: Int = PropFindHandler.DefaultDepth) =
+        propFind.propName(url, depth)
+
 
     /**
      * Creates a directory at [url].

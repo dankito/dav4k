@@ -199,6 +199,14 @@ class WebDavClientTest {
     }
 
     @Test
+    fun getAvailablePropertyNames() = runTest {
+        val result = localWebDavClient.getAvailablePropertyNames("/", 1)
+
+        assertThat(result).isNotNull()
+        assertThat(result!!.responses).hasSize(3)
+    }
+
+    @Test
     fun localWebDav() = runTest {
         val result = localWebDavClient.list("/")
 

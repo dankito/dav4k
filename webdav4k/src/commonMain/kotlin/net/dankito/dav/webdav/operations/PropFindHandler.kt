@@ -19,12 +19,14 @@ open class PropFindHandler(
          */
         val DefaultDepth = 0
 
+        // see e.g. https://www.rfc-editor.org/rfc/rfc4918#section-9.1.5
         val AllPropBody = """
             <d:propfind xmlns:d="DAV:">
               <d:allprop/>
             </d:propfind>
         """.trimIndent()
 
+        // see e.g. https://www.rfc-editor.org/rfc/rfc4918#section-9.1.4
         val PropNameBody = """
             <d:propfind xmlns:d="DAV:">
               <d:propname/>
