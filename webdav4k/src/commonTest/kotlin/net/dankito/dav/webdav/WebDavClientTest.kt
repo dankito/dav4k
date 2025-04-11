@@ -3,6 +3,7 @@ package net.dankito.dav.webdav
 import assertk.assertThat
 import assertk.assertions.*
 import kotlinx.coroutines.test.runTest
+import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.options.UploadFileOptions
 import kotlin.test.Test
@@ -16,7 +17,7 @@ class WebDavClientTest {
 
     @Test
     fun list_DefaultProperties() = runTest {
-        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", 1)
+        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", Depth.DirectoryListing)
 
         assertThat(result).isNotNull()
         assertThat(result!!.responses).hasSize(3)
@@ -38,7 +39,7 @@ class WebDavClientTest {
 
     @Test
     fun list_SpecifyWhichPropertiesToReturn() = runTest {
-        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", 1,
+        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", Depth.DirectoryListing,
             // builds this ownCloud example: https://owncloud.dev/apis/http/webdav/#listing-properties
             Property.ownCloudProperty("permissions"), Property.ownCloudProperty("favorite"),
             Property.ownCloudProperty("fileid"),
@@ -200,7 +201,7 @@ class WebDavClientTest {
 
     @Test
     fun getAvailablePropertyNames() = runTest {
-        val result = localWebDavClient.getAvailablePropertyNames("/", 1)
+        val result = localWebDavClient.getAvailablePropertyNames("/", Depth.DirectoryListing)
 
         assertThat(result).isNotNull()
         assertThat(result!!.responses).hasSize(3)

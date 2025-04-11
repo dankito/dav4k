@@ -3,6 +3,7 @@ package net.dankito.dav.webdav.operations
 import io.ktor.http.*
 import net.dankito.dav.DefaultNamespaces
 import net.dankito.dav.web.*
+import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.MultiStatus
 import net.dankito.dav.webdav.model.Property
 
@@ -17,7 +18,7 @@ open class PropFindHandler(
         /**
          * The default is to return only the resource specified by url.
          */
-        val DefaultDepth = 0
+        val DefaultDepth = Depth.ResourceOnly
 
         // see e.g. https://www.rfc-editor.org/rfc/rfc4918#section-9.1.5
         val AllPropBody = """
@@ -38,12 +39,12 @@ open class PropFindHandler(
     /**
      * Returns all standard / DAV-defined properties.
      */
-    open suspend fun allProp(url: String, depth: Int = DefaultDepth) = makeRequest(url, depth, AllPropBody)
+    open suspend fun allProp(url: String, depth: Depth = DefaultDepth) = makeRequest(url, depth, AllPropBody)
 
     /**
      * Return just the property names (no values).
      */
-    open suspend fun propName(url: String, depth: Int = DefaultDepth) = makeRequest(url, depth, PropNameBody)
+    open suspend fun propName(url: String, depth: Depth = DefaultDepth) = makeRequest(url, depth, PropNameBody)
 
     /**
      * Returns only the listed properties.
@@ -53,7 +54,7 @@ open class PropFindHandler(
     /**
      * Returns only the listed properties.
      */
-    open suspend fun prop(url: String, depth: Int = DefaultDepth, vararg props: Property) =
+    open suspend fun prop(url: String, depth: Depth = DefaultDepth, vararg props: Property) =
         makeRequest(url, depth, createPropBody(props.toList()))
 
     protected open fun createPropBody(properties: List<Property>): String {
@@ -76,9 +77,9 @@ open class PropFindHandler(
         namespaceUri?.let { DefaultNamespaces.getPrefixForNamespace(namespaceUri) }
 
 
-    protected open suspend fun makeRequest(url: String, depth: Int, body: String?): MultiStatus? {
+    protected open suspend fun makeRequest(url: String, depth: Depth, body: String?): MultiStatus? {
         val request = RequestParameters(url, String::class, body, ContentTypes.XML, ContentTypes.XML, mapOf(
-            "DEPTH" to if (depth in 0 until Int.MAX_VALUE) depth.toString() else "infinity"
+            "DEPTH" to depth.apiValue
         ))
 
         val response = executeCustomRequest(PropFindHttpMethod, request)

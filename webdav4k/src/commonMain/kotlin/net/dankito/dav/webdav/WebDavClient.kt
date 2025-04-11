@@ -3,6 +3,7 @@ package net.dankito.dav.webdav
 import net.dankito.dav.web.KtorWebClient
 import net.dankito.dav.web.WebClient
 import net.dankito.dav.web.credentials.Credentials
+import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.operations.*
 import net.dankito.dav.webdav.options.UploadFileOptions
@@ -41,26 +42,25 @@ open class WebDavClient(
      * @param props The properties of the resource to return. If no properties are specified, then the server decides
      * which properties to return for the resource.
      */
-    open suspend fun list(url: String, vararg props: Property) = list(url, 0, *props)
+    open suspend fun list(url: String, vararg props: Property) = list(url, Depth.ResourceOnly, *props)
 
     /**
      * Lists the properties of the resource specified by [url].
      *
-     * [depth] controls how many sub hierarchy levels of the resource should be retrieved. 0 = only the resource, 1 =
-     * the resource and its direct children (directory listing), [Int.MAX_VALUE] or < 0 = all children (can be rejected
-     * by server or lead to timeouts on large directories).
+     * [depth] controls how many sub hierarchy levels of the resource should be retrieved: the resource specified by
+     * url only, the resource and its direct children (directory listing) or the resource and all its direct and
+     * indirect children (can be rejected by server or lead to timeouts on large directories).
      *
      * If no [props] are specified, then WebDAV `allprops` is used and server decides which properties to return, which
      * can be inefficient sometimes.
      *
      * @param url Relativ to webDavUrl specified when creating [WebDavClient] or absolute URL including protocol and host.
-     * @param depth - 0 = only the resource specified by url. - 1 = directory listing (the resource and its direct
-     * children). - > 1 = even more child levels. - [Int.MAX_VALUE] or < 0 = all resources which some servers will
-     * reject or on large directories may will lead to timeouts as the server is not able to compute the result in time.
+     * @param depth - The resource specified by url only, the resource and its direct children (directory listing) or
+     * the resource and all its direct and indirect children (can be rejected by server or lead to timeouts on large directories).
      * @param props The properties of each resource to return. If no properties are specified, then the server decides
      * which properties to return for each resource.
      */
-    open suspend fun list(url: String, depth: Int = PropFindHandler.DefaultDepth, vararg props: Property) =
+    open suspend fun list(url: String, depth: Depth = PropFindHandler.DefaultDepth, vararg props: Property) =
         if (props.isEmpty()) propFind.allProp(url, depth)
         else propFind.prop(url, depth, *props)
 
@@ -70,7 +70,7 @@ open class WebDavClient(
      * But according to my experience does not work reliably. Some servers don't return any property names, others
      * only a few. Haven't found any server that really returned all available property names of a resource.
      */
-    open suspend fun getAvailablePropertyNames(url: String, depth: Int = PropFindHandler.DefaultDepth) =
+    open suspend fun getAvailablePropertyNames(url: String, depth: Depth = PropFindHandler.DefaultDepth) =
         propFind.propName(url, depth)
 
 
