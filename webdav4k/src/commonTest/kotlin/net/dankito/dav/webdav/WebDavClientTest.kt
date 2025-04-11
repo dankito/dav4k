@@ -54,6 +54,11 @@ class WebDavClientTest {
                 assertThat(resource.contentType).isNotNull().isNotEmpty()
                 assertThat(resource.contentLength).isNotNull().isGreaterThan(0)
             }
+
+            // assert ownCloud properties
+            assertThat(resource.findOwnCloudPropertyValue("permissions")).isNotNull().isNotEmpty()
+            assertThat(resource.findOwnCloudPropertyValue("favorite")?.toIntOrNull()).isNotNull().isEqualTo(0)
+            assertThat(resource.findOwnCloudPropertyValue("fileid")).isNotNull().isNotEmpty()
         }
     }
 
@@ -105,6 +110,15 @@ class WebDavClientTest {
                 assertThat(resource.contentType).isNotNull().isNotEmpty()
                 assertThat(resource.contentLength).isNotNull().isGreaterThan(0)
             }
+
+            // assert ownCloud properties
+            assertThat(resource.findOwnCloudPropertyValue("permissions")).isNotNull().isNotEmpty()
+            assertThat(resource.findOwnCloudPropertyValue("favorite")?.toIntOrNull()).isNotNull().isEqualTo(0)
+            assertThat(resource.findOwnCloudPropertyValue("fileid")).isNotNull().isNotEmpty()
+            assertThat(resource.findOwnCloudPropertyValue("owner-id")).isNotNull().isNotEmpty()
+            assertThat(resource.findOwnCloudPropertyValue("owner-display-name")).isNotNull().isNotEmpty()
+            assertThat(resource.findOwnCloudPropertyValue("privatelink")).isNotNull().isNotEmpty()
+            assertThat(resource.findOwnCloudPropertyValue("size")?.toIntOrNull()).isNotNull().isGreaterThanOrEqualTo(0)
         }
     }
 
