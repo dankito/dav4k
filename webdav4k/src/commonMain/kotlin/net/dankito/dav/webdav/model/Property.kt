@@ -23,6 +23,9 @@ data class Property(
     }
 
 
+    val isDavProperty = namespaceUri == DefaultNamespaces.Dav
+
+
     /**
      * See https://www.rfc-editor.org/rfc/rfc4918#section-15
      *
