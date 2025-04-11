@@ -45,10 +45,10 @@ class WebDavClientTest {
             Property.ownCloudProperty("fileid"),
             Property.ownCloudProperty("owner-id"), Property.ownCloudProperty("owner-display-name"),
             Property.ownCloudProperty("share-types"), Property.ownCloudProperty("privatelink"),
-            Property.davProperty("getcontentlength"),
+            Property.Dav.ContentLength,
             Property.ownCloudProperty("size"),
-            Property.davProperty("getlastmodified"), Property.davProperty("getetag"),
-            Property.davProperty("getcontenttype"), Property.davProperty("resourcetype"),
+            Property.Dav.LastModified, Property.Dav.ETag,
+            Property.Dav.ContentType, Property.Dav.ResourceType,
             Property.ownCloudProperty("downloadURL")
         )
 
