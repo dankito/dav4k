@@ -23,7 +23,7 @@ data class DavResource(
 
     val contentLanguage = findPropertyValue(Property.Dav.ContentLanguage)
 
-    val contentLength = findPropertyValue(Property.Dav.ContentLength)?.toIntOrNull()
+    val contentLength = findPropertyValue(Property.Dav.ContentLength)?.toLongOrNull()
 
     val contentType = findPropertyValue(Property.Dav.ContentType)
 
