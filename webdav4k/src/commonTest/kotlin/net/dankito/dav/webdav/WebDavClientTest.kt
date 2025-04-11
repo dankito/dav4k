@@ -39,11 +39,20 @@ class WebDavClientTest {
             }
 
             // some properties don't exist
-            assertThat(resource.notFoundProperties.size).isIn(4)
+            assertThat(resource.notFoundProperties).hasSize(4)
             resource.notFoundProperties.forEach { property ->
                 // values or children may not be set then
                 assertThat(property.value).isNull()
                 assertThat(property.children).isEmpty()
+            }
+
+            // asserting property values have been mapped
+            assertThat(resource.displayname).isNotNull().isNotEmpty()
+            assertThat(resource.lastModified).isNotNull().isNotEmpty()
+            assertThat(resource.etag).isNotNull().isNotEmpty()
+            if (resource.isFile) {
+                assertThat(resource.contentType).isNotNull().isNotEmpty()
+                assertThat(resource.contentLength).isNotNull().isGreaterThan(0)
             }
         }
     }
@@ -73,10 +82,29 @@ class WebDavClientTest {
         result.forEach { resource ->
             assertThat(resource.url).isNotEmpty()
 
-            assertThat(resource.properties.size).isIn(10, 12)
+            if (resource.isFolder) {
+                assertThat(resource.properties).hasSize(10)
 
-            // some properties don't exist
-            assertThat(resource.notFoundProperties.size).isIn(2, 4)
+                // some properties don't exist
+                assertThat(resource.notFoundProperties).hasSize(4)
+
+                // properties not existing on folders
+                assertThat(resource.notFoundProperties.map { it.name }).containsAtLeast("getcontenttype", "getcontentlength")
+            } else if (resource.isFile) {
+                assertThat(resource.properties).hasSize(12)
+                assertThat(resource.notFoundProperties).hasSize(2)
+            }
+
+            // properties that don't exist neither on files nor on folders
+            assertThat(resource.notFoundProperties.map { it.name }).containsAtLeast("share-types", "downloadURL")
+
+            // asserting property values have been mapped
+            assertThat(resource.lastModified).isNotNull().isNotEmpty()
+            assertThat(resource.etag).isNotNull().isNotEmpty()
+            if (resource.isFile) {
+                assertThat(resource.contentType).isNotNull().isNotEmpty()
+                assertThat(resource.contentLength).isNotNull().isGreaterThan(0)
+            }
         }
     }
 
