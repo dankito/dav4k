@@ -27,7 +27,8 @@ class WebDavClientTest {
             assertThat(resource.properties.size).isIn(13, 15)
             resource.properties.forEach { property ->
                 // either direct value or children must be set
-                if (property.name != "tags" && property.namespaceUri != DefaultNamespaces.OwnCloud) { // ok, ownCloud's tags property may be empty
+                if ((property.name == "resourcetype" && property.namespaceUri == DefaultNamespaces.Dav) == false &&
+                    (property.name == "tags" && property.namespaceUri == DefaultNamespaces.OwnCloud) == false) { // ok, ownCloud's tags property may be empty
                     assertThat(property.value != null || property.children.isNotEmpty()).isTrue()
                 }
             }
