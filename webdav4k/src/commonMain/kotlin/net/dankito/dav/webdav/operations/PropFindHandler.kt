@@ -3,9 +3,7 @@ package net.dankito.dav.webdav.operations
 import io.ktor.http.*
 import net.dankito.dav.DefaultNamespaces
 import net.dankito.dav.web.*
-import net.dankito.dav.webdav.model.Depth
-import net.dankito.dav.webdav.model.MultiStatus
-import net.dankito.dav.webdav.model.Property
+import net.dankito.dav.webdav.model.*
 
 open class PropFindHandler(
     webClient: WebClient,
@@ -77,7 +75,7 @@ open class PropFindHandler(
         namespaceUri?.let { DefaultNamespaces.getPrefixForNamespace(namespaceUri) }
 
 
-    protected open suspend fun makeRequest(url: String, depth: Depth, body: String?): MultiStatus? {
+    protected open suspend fun makeRequest(url: String, depth: Depth, body: String?): List<DavResource> {
         val request = RequestParameters(url, String::class, body, ContentTypes.XML, ContentTypes.XML, mapOf(
             "DEPTH" to depth.apiValue
         ))
@@ -85,10 +83,19 @@ open class PropFindHandler(
         val response = executeCustomRequest(PropFindHttpMethod, request)
 
         return if (response.isSuccessResponse) {
-            multiStatusReader.parse(response.body!!)
+            multiStatusReader.parse(response.body!!)?.let {
+                it.responses.map { mapToResource(it) }
+            } ?: emptyList()
         } else {
-            null // TODO: return error
+            emptyList() // TODO: return error
         }
+    }
+
+    protected open fun mapToResource(response: Response): DavResource {
+        val successResponses = response.propStats.filter { it.status?.isSuccess == true } // there should be only one success PropStats per Response
+        val errorResponses = response.propStats.filter { it.status?.isSuccess == false } // and may one error PropStats for requested properties that have not been found
+
+        return DavResource(response.href.first(), successResponses.flatMap { it.properties }, errorResponses.flatMap { it.properties })
     }
 
 }

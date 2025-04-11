@@ -42,7 +42,7 @@ open class WebDavClient(
      * @param props The properties of the resource to return. If no properties are specified, then the server decides
      * which properties to return for the resource.
      */
-    open suspend fun listResource(url: String, vararg props: Property) = list(url, Depth.ResourceOnly, *props)
+    open suspend fun listResource(url: String, vararg props: Property) = list(url, Depth.ResourceOnly, *props).firstOrNull()
 
     /**
      * Lists the properties of the resource specified by [url] and all its direct children.

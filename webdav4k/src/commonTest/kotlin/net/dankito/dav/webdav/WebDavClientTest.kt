@@ -20,17 +20,12 @@ class WebDavClientTest {
     fun list_DefaultProperties() = runTest {
         val result = underTest.listDirectory("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe")
 
-        assertThat(result).isNotNull()
-        assertThat(result!!.responses).hasSize(3)
+        assertThat(result).hasSize(3)
 
-        result.responses.forEach { response ->
-            assertThat(response.href).hasSize(1)
-            assertThat(response.propStats).hasSize(2)
-
-            val successResponse = response.propStats.first { it.status?.isSuccess == true }
-            assertThat(successResponse).isNotNull()
-            assertThat(successResponse.properties.size).isIn(13, 15)
-            successResponse.properties.forEach { property ->
+        result.forEach { resource ->
+            assertThat(resource.url).isNotEmpty()
+            assertThat(resource.properties.size).isIn(13, 15)
+            resource.properties.forEach { property ->
                 // either direct value or children must be set
                 if (property.name != "tags" && property.namespaceUri != DefaultNamespaces.OwnCloud) { // ok, ownCloud's tags property may be empty
                     assertThat(property.value != null || property.children.isNotEmpty()).isTrue()
@@ -38,10 +33,8 @@ class WebDavClientTest {
             }
 
             // some properties don't exist
-            val notFoundResponse = response.propStats.first { it.status?.httpStatusCode == 404 }
-            assertThat(notFoundResponse).isNotNull()
-            assertThat(notFoundResponse.properties.size).isIn(4)
-            successResponse.properties.forEach { property ->
+            assertThat(resource.notFoundProperties.size).isIn(4)
+            resource.notFoundProperties.forEach { property ->
                 // values or children may not be set then
                 assertThat(property.value).isNull()
                 assertThat(property.children).isEmpty()
@@ -64,21 +57,15 @@ class WebDavClientTest {
             Property.ownCloudProperty("downloadURL")
         )
 
-        assertThat(result).isNotNull()
-        assertThat(result!!.responses).hasSize(3)
+        assertThat(result).hasSize(3)
 
-        result.responses.forEach { response ->
-            assertThat(response.href).hasSize(1)
-            assertThat(response.propStats).hasSize(2)
+        result.forEach { resource ->
+            assertThat(resource.url).isNotEmpty()
 
-            val successResponse = response.propStats.first { it.status?.isSuccess == true }
-            assertThat(successResponse).isNotNull()
-            assertThat(successResponse.properties.size).isIn(10, 12)
+            assertThat(resource.properties.size).isIn(10, 12)
 
             // some properties don't exist
-            val notFoundResponse = response.propStats.first { it.status?.httpStatusCode == 404 }
-            assertThat(notFoundResponse).isNotNull()
-            assertThat(notFoundResponse.properties.size).isIn(2, 4)
+            assertThat(resource.notFoundProperties.size).isIn(2, 4)
         }
     }
 
@@ -123,7 +110,6 @@ class WebDavClientTest {
         val filesOnServer = localWebDavClient.listResource(fileUrl)
 
         assertThat(filesOnServer).isNotNull()
-        assertThat(filesOnServer!!.responses).hasSize(1)
         // TODO: store test start time and check if lastUpdateTime is after test start time
 
         localWebDavClient.deleteFileOrDirectory(fileUrl)
@@ -139,7 +125,6 @@ class WebDavClientTest {
         val filesOnServerBefore = localWebDavClient.listResource(fileUrl)
 
         assertThat(filesOnServerBefore).isNotNull()
-        assertThat(filesOnServerBefore!!.responses).hasSize(1)
 
 
         val result = localWebDavClient.deleteFileOrDirectory(fileUrl)
@@ -202,8 +187,7 @@ class WebDavClientTest {
 
 
         val destinationDirContent = localWebDavClient.list(destinationDirectory, Depth.Infinity)
-        assertThat(destinationDirContent).isNotNull()
-        assertThat(destinationDirContent!!.responses).hasSize(3) // assert that also containing file has been moved
+        assertThat(destinationDirContent).hasSize(3) // assert that also containing file has been moved
 
 
         localWebDavClient.deleteFileOrDirectory(destinationDirectory)
@@ -244,8 +228,7 @@ class WebDavClientTest {
     fun getAvailablePropertyNames() = runTest {
         val result = localWebDavClient.getAvailablePropertyNames("/", Depth.DirectoryListing)
 
-        assertThat(result).isNotNull()
-        assertThat(result!!.responses).hasSize(3)
+        assertThat(result).hasSize(3)
     }
 
     @Test
@@ -263,8 +246,7 @@ class WebDavClientTest {
             assertThat(fileOnServer).isNull()
         } else {
             // hm, the WebDAV server i use still returns the file, which is not conformant to standard, it just sets its contentlength to 0
-            assertThat(fileOnServer.responses).hasSize(1)
-            assertThat(fileOnServer.responses.first().propStats.first().properties.first { it.name == "getcontentlength" }.value).isEqualTo("0")
+            assertThat(fileOnServer.properties.first { it.name == "getcontentlength" }.value).isEqualTo("0")
         }
     }
 
