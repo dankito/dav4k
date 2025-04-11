@@ -20,6 +20,8 @@ open class MoveFileCommand(webClient: WebClient) : CommandBase(webClient) {
 
         val response = executeCustomRequest(MoveHttpMethod, request)
 
+        // ChatGPT says that it might return a MultiStatus response if copying/moving recursively and some resources
+        // fail, but haven't found any example for this.
         return response.isSuccessResponse
     }
 

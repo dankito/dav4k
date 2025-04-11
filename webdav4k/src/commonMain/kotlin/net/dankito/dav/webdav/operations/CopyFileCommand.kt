@@ -20,6 +20,8 @@ open class CopyFileCommand(webClient: WebClient) : CommandBase(webClient) {
 
         val response = executeCustomRequest(CopyHttpMethod, request)
 
+        // ChatGPT says that it might return a MultiStatus response if copying/moving recursively and some resources
+        // fail, but haven't found any example for this.
         return response.isSuccessResponse
     }
 

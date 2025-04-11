@@ -11,6 +11,8 @@ open class DeleteFileCommand(webClient: WebClient) : CommandBase(webClient) {
 
         val response = webClient.delete(request)
 
+        // ChatGPT says that it might return a MultiStatus response for recursive deletes, may list per-resource status,
+        // but haven't found any example for this.
         return response.isSuccessResponse
     }
 
