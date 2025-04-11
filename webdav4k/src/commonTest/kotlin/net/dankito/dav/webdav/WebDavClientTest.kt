@@ -3,6 +3,7 @@ package net.dankito.dav.webdav
 import assertk.assertThat
 import assertk.assertions.*
 import kotlinx.coroutines.test.runTest
+import net.dankito.dav.DefaultNamespaces
 import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.options.UploadFileOptions
@@ -29,11 +30,22 @@ class WebDavClientTest {
             val successResponse = response.propStats.first { it.status?.isSuccess == true }
             assertThat(successResponse).isNotNull()
             assertThat(successResponse.properties.size).isIn(13, 15)
+            successResponse.properties.forEach { property ->
+                // either direct value or children must be set
+                if (property.name != "tags" && property.namespaceUri != DefaultNamespaces.OwnCloud) { // ok, ownCloud's tags property may be empty
+                    assertThat(property.value != null || property.children.isNotEmpty()).isTrue()
+                }
+            }
 
             // some properties don't exist
             val notFoundResponse = response.propStats.first { it.status?.httpStatusCode == 404 }
             assertThat(notFoundResponse).isNotNull()
             assertThat(notFoundResponse.properties.size).isIn(4)
+            successResponse.properties.forEach { property ->
+                // values or children may not be set then
+                assertThat(property.value).isNull()
+                assertThat(property.children).isEmpty()
+            }
         }
     }
 

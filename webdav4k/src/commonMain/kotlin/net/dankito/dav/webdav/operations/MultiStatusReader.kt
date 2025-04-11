@@ -113,7 +113,7 @@ open class MultiStatusReader {
 
         when (reader.next()) {
             EventType.TEXT -> Property(name, namespaceUri, prefix, readText(reader))
-            EventType.START_ELEMENT -> Property(name, namespaceUri, prefix, null, readPropertyChildren(reader))
+            EventType.START_ELEMENT -> Property(name, namespaceUri, prefix, null, readPropertyChildren(name, reader))
             else -> Property(name, namespaceUri, prefix)
         }
     } catch (e: Throwable) {
@@ -122,9 +122,19 @@ open class MultiStatusReader {
     }
 
     // e.g. dav:resourcetype can have child elements, see e.g. https://github-wiki-see.page/m/dmfs/davwiki/wiki/DAV%3A%3Aresourcetype
-    protected open fun readPropertyChildren(reader: XmlReader): List<Property> =
-        // TODO: implement parsing of child elements
-        emptyList()
+    protected open fun readPropertyChildren(parentPropertyName: String, reader: XmlReader): List<Property> {
+        val children = mutableListOf<Property>()
+
+        readProperty(reader)?.let { children.add(it) }
+
+        while (reader.nextIsNotEndElementOf(parentPropertyName)) {
+            if (reader.isStartElement()) {
+                readProperty(reader)?.let { children.add(it) }
+            }
+        }
+
+        return children
+    }
 
 
     protected open fun readStatus(reader: XmlReader): Status? = try {

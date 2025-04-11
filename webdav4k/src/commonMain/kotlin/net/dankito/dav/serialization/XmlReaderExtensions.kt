@@ -58,5 +58,13 @@ fun XmlReader.nextIsNot(type: EventType): Boolean {
     return false
 }
 
+fun XmlReader.nextIsNotEndElementOf(tagName: String): Boolean =
+    if (this.hasNext()) {
+        this.next()
+        this.isNotEndElement || this.localName != tagName
+    } else {
+        false
+    }
+
 fun XmlReader.isStillInElement(tagName: String): Boolean =
     this.hasNext() && (this.isNotEndElement || this.localName != tagName)
