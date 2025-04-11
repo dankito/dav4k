@@ -22,6 +22,11 @@ class WebDavClientTest {
 
         assertThat(result).hasSize(3)
 
+        val files = result.filter { it.isFile }
+        val folders = result.filter { it.isFolder }
+        assertThat(files).hasSize(1)
+        assertThat(folders).hasSize(2)
+
         result.forEach { resource ->
             assertThat(resource.url).isNotEmpty()
             assertThat(resource.properties.size).isIn(13, 15)
@@ -59,6 +64,11 @@ class WebDavClientTest {
         )
 
         assertThat(result).hasSize(3)
+
+        val files = result.filter { it.isFile }
+        val folders = result.filter { it.isFolder }
+        assertThat(files).hasSize(1)
+        assertThat(folders).hasSize(2)
 
         result.forEach { resource ->
             assertThat(resource.url).isNotEmpty()
@@ -189,6 +199,11 @@ class WebDavClientTest {
 
         val destinationDirContent = localWebDavClient.list(destinationDirectory, Depth.Infinity)
         assertThat(destinationDirContent).hasSize(3) // assert that also containing file has been moved
+
+        val files = destinationDirContent.filter { it.isFile }
+        val folders = destinationDirContent.filter { it.isFolder }
+        assertThat(files).hasSize(1)
+        assertThat(folders).hasSize(2)
 
 
         localWebDavClient.deleteFileOrDirectory(destinationDirectory)
