@@ -18,7 +18,7 @@ class WebDavClientTest {
 
     @Test
     fun list_DefaultProperties() = runTest {
-        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", Depth.DirectoryListing)
+        val result = underTest.listDirectory("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe")
 
         assertThat(result).isNotNull()
         assertThat(result!!.responses).hasSize(3)
@@ -51,7 +51,7 @@ class WebDavClientTest {
 
     @Test
     fun list_SpecifyWhichPropertiesToReturn() = runTest {
-        val result = underTest.list("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe", Depth.DirectoryListing,
+        val result = underTest.listDirectory("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe",
             // builds this ownCloud example: https://owncloud.dev/apis/http/webdav/#listing-properties
             Property.ownCloudProperty("permissions"), Property.ownCloudProperty("favorite"),
             Property.ownCloudProperty("fileid"),
@@ -120,7 +120,7 @@ class WebDavClientTest {
         assertThat(result).isTrue()
 
 
-        val filesOnServer = localWebDavClient.list(fileUrl)
+        val filesOnServer = localWebDavClient.listResource(fileUrl)
 
         assertThat(filesOnServer).isNotNull()
         assertThat(filesOnServer!!.responses).hasSize(1)
@@ -136,7 +136,7 @@ class WebDavClientTest {
 
         assertThat(uploadResult).isTrue()
 
-        val filesOnServerBefore = localWebDavClient.list(fileUrl)
+        val filesOnServerBefore = localWebDavClient.listResource(fileUrl)
 
         assertThat(filesOnServerBefore).isNotNull()
         assertThat(filesOnServerBefore!!.responses).hasSize(1)
@@ -221,14 +221,14 @@ class WebDavClientTest {
 
     @Test
     fun localWebDav() = runTest {
-        val result = localWebDavClient.list("/")
+        val result = localWebDavClient.listResource("/")
 
         assertThat(result).isNotNull()
     }
 
 
     private suspend fun assertIsDeleted(fileUrl: String) {
-        val fileOnServer = localWebDavClient.list(fileUrl)
+        val fileOnServer = localWebDavClient.listResource(fileUrl)
 
         if (fileOnServer == null) {
             assertThat(fileOnServer).isNull()

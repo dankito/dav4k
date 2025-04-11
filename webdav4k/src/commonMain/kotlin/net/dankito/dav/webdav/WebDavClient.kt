@@ -42,7 +42,19 @@ open class WebDavClient(
      * @param props The properties of the resource to return. If no properties are specified, then the server decides
      * which properties to return for the resource.
      */
-    open suspend fun list(url: String, vararg props: Property) = list(url, Depth.ResourceOnly, *props)
+    open suspend fun listResource(url: String, vararg props: Property) = list(url, Depth.ResourceOnly, *props)
+
+    /**
+     * Lists the properties of the resource specified by [url] and all its direct children.
+     *
+     * If no [props] are specified, then WebDAV `allprops` is used and server decides which properties to return, which
+     * can be inefficient sometimes.
+     *
+     * @param url Relativ to webDavUrl specified when creating [WebDavClient] or absolute URL including protocol and host.
+     * @param props The properties of the resource to return. If no properties are specified, then the server decides
+     * which properties to return for the resource.
+     */
+    open suspend fun listDirectory(url: String, vararg props: Property) = list(url, Depth.DirectoryListing, *props)
 
     /**
      * Lists the properties of the resource specified by [url].
