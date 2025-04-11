@@ -2,6 +2,7 @@ package net.dankito.dav.web
 
 open class WebClientResponse<T>(
     open val successful: Boolean,
+    open val url: String,
     open val statusCode: Int = -1,
     open val headers: Map<String, List<String>>? = null,
     open val error: Throwable? = null,

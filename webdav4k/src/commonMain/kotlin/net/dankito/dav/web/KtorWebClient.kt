@@ -92,7 +92,8 @@ open class KtorWebClient(
             mapHttResponse(method, parameters, httpResponse)
         } catch (e: Throwable) {
             log.error(e) { "Error during request to ${method.value} ${parameters.url}" }
-            WebClientResponse(false, error = WebClientException(-1, emptyMap(), e.message ?: "", e))
+            // be aware this might not be the absolute url but only the relative url the user has passed to WebClient
+            WebClientResponse(false, parameters.url, error = WebClientException(-1, emptyMap(), e.message ?: "", e))
         }
     }
 
@@ -141,18 +142,19 @@ open class KtorWebClient(
     protected open suspend fun <T : Any> mapHttResponse(method: HttpMethod, parameters: RequestParameters<T>, httpResponse: HttpResponse): WebClientResponse<T> {
         val statusCode = httpResponse.status.value
         val headers = httpResponse.headers.toMap()
+        val url = httpResponse.request.url.toString()
 
         return if (httpResponse.status.isSuccess()) {
             try {
-                WebClientResponse(true, statusCode, headers, body = decodeResponse(parameters, httpResponse))
+                WebClientResponse(true, url, statusCode, headers, body = decodeResponse(parameters, httpResponse))
             } catch (e: Throwable) {
                 log.error(e) { "Error while mapping response of: ${method.value} ${httpResponse.request.url}, ${httpResponse.headers.toMap()}" }
-                WebClientResponse(true, statusCode, headers, WebClientException(statusCode, headers, e.message ?: "", e))
+                WebClientResponse(true, url, statusCode, headers, WebClientException(statusCode, headers, e.message ?: "", e))
             }
         } else {
             val responseBody = httpResponse.bodyAsText()
 
-            WebClientResponse(false, statusCode, headers, WebClientException(statusCode, headers, responseBody))
+            WebClientResponse(false, url, statusCode, headers, WebClientException(statusCode, headers, responseBody))
         }
     }
 
