@@ -185,6 +185,35 @@ class WebDavClientTest {
     }
 
     @Test
+    fun moveDirectory() = runTest {
+        val sourceDirectory = "/sourceDir"
+        val destinationDirectory = "/destinationDir"
+        localWebDavClient.createDirectory(sourceDirectory)
+        localWebDavClient.createDirectory(destinationDirectory)
+
+        val uploadFileResult = localWebDavClient.uploadFile(sourceDirectory + fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
+
+        assertThat(uploadFileResult).isTrue()
+
+
+        val result = localWebDavClient.moveFile(sourceDirectory, destinationDirectory + sourceDirectory, true)
+
+        assertThat(result).isTrue()
+
+
+        val destinationDirContent = localWebDavClient.list(destinationDirectory, Depth.Infinity)
+        assertThat(destinationDirContent).isNotNull()
+        assertThat(destinationDirContent!!.responses).hasSize(3) // assert that also containing file has been moved
+
+
+        localWebDavClient.deleteFileOrDirectory(destinationDirectory)
+
+        assertIsDeleted(destinationDirectory)
+        assertIsDeleted(sourceDirectory)
+        assertIsDeleted(sourceDirectory + fileUrl)
+    }
+
+    @Test
     fun fileExists() = runTest {
         val uploadFileResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
@@ -234,7 +263,7 @@ class WebDavClientTest {
             assertThat(fileOnServer).isNull()
         } else {
             // hm, the WebDAV server i use still returns the file, which is not conformant to standard, it just sets its contentlength to 0
-            assertThat(fileOnServer!!.responses).hasSize(1)
+            assertThat(fileOnServer.responses).hasSize(1)
             assertThat(fileOnServer.responses.first().propStats.first().properties.first { it.name == "getcontentlength" }.value).isEqualTo("0")
         }
     }
