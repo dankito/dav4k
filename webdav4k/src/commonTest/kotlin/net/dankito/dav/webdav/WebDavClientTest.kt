@@ -4,6 +4,8 @@ import assertk.assertThat
 import assertk.assertions.*
 import kotlinx.coroutines.test.runTest
 import net.dankito.dav.DefaultNamespaces
+import net.dankito.dav.Success
+import net.dankito.dav.webdav.model.DavResource
 import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.options.UploadFileOptions
@@ -20,14 +22,16 @@ class WebDavClientTest {
     fun list_DefaultProperties() = runTest {
         val result = underTest.listDirectory("spaces/cb7e504b-d254-4643-9f5b-c51ad4743938\$6f2ce006-3ee0-41c2-b1d4-b35e6d3a0efe")
 
-        assertThat(result).hasSize(3)
+        assertThat(result.isSuccess()).isTrue()
+        val filesAndFolders = (result as Success).data
+        assertThat(filesAndFolders).hasSize(3)
 
-        val files = result.filter { it.isFile }
-        val folders = result.filter { it.isFolder }
+        val files = filesAndFolders.filter { it.isFile }
+        val folders = filesAndFolders.filter { it.isFolder }
         assertThat(files).hasSize(1)
         assertThat(folders).hasSize(2)
 
-        result.forEach { resource ->
+        filesAndFolders.forEach { resource ->
             assertThat(resource.url).isNotEmpty()
             assertThat(resource.properties.size).isIn(13, 15)
             resource.properties.forEach { property ->
@@ -77,14 +81,16 @@ class WebDavClientTest {
             Property.ownCloudProperty("downloadURL")
         )
 
-        assertThat(result).hasSize(3)
+        assertThat(result.isSuccess()).isTrue()
+        val filesAndFolders = (result as Success).data
+        assertThat(filesAndFolders).hasSize(3)
 
-        val files = result.filter { it.isFile }
-        val folders = result.filter { it.isFolder }
+        val files = filesAndFolders.filter { it.isFile }
+        val folders = filesAndFolders.filter { it.isFolder }
         assertThat(files).hasSize(1)
         assertThat(folders).hasSize(2)
 
-        result.forEach { resource ->
+        filesAndFolders.forEach { resource ->
             assertThat(resource.url).isNotEmpty()
 
             if (resource.isFolder) {
@@ -132,7 +138,7 @@ class WebDavClientTest {
 
         val result = localWebDavClient.createDirectory(directoryUrl)
 
-        assertThat(result).isTrue()
+        assertThat(result.isSuccess()).isTrue()
 
 
         localWebDavClient.deleteFileOrDirectory(directoryUrl)
@@ -142,13 +148,14 @@ class WebDavClientTest {
     fun downloadFile() = runTest {
         val uploadResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
-        assertThat(uploadResult).isTrue()
+        assertThat(uploadResult.isSuccess()).isTrue()
 
 
         val result = localWebDavClient.downloadFile(fileUrl)
 
-        assertThat(result).isNotNull().hasSize(fileContent.length)
-        assertThat(result!!.decodeToString()).isEqualTo(fileContent)
+        assertThat(result.isSuccess()).isTrue()
+        assertThat((result as Success).data).hasSize(fileContent.length)
+        assertThat(result.data.decodeToString()).isEqualTo(fileContent)
 
         localWebDavClient.deleteFileOrDirectory(fileUrl)
     }
@@ -157,12 +164,12 @@ class WebDavClientTest {
     fun uploadFile() = runTest {
         val result = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
-        assertThat(result).isTrue()
+        assertThat(result.isSuccess()).isTrue()
 
 
         val filesOnServer = localWebDavClient.listResource(fileUrl)
 
-        assertThat(filesOnServer).isNotNull()
+        assertThat(filesOnServer.isSuccess()).isTrue()
         // TODO: store test start time and check if lastUpdateTime is after test start time
 
         localWebDavClient.deleteFileOrDirectory(fileUrl)
@@ -173,17 +180,17 @@ class WebDavClientTest {
     fun deleteFile() = runTest {
         val uploadResult = localWebDavClient.uploadFile(fileUrl, "Any content".encodeToByteArray(), UploadFileOptions("text/plain", true))
 
-        assertThat(uploadResult).isTrue()
+        assertThat(uploadResult.isSuccess()).isTrue()
 
         val filesOnServerBefore = localWebDavClient.listResource(fileUrl)
 
-        assertThat(filesOnServerBefore).isNotNull()
+        assertThat(filesOnServerBefore.isSuccess()).isTrue()
 
 
         val result = localWebDavClient.deleteFileOrDirectory(fileUrl)
 
 
-        assertThat(result).isTrue()
+        assertThat(result.isSuccess()).isTrue()
 
         assertIsDeleted(fileUrl)
     }
@@ -192,12 +199,12 @@ class WebDavClientTest {
     fun copyFile() = runTest {
         val uploadFileResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
-        assertThat(uploadFileResult).isTrue()
+        assertThat(uploadFileResult.isSuccess()).isTrue()
 
 
         val result = localWebDavClient.copyFile(fileUrl, destinationFileUrl, true)
 
-        assertThat(result).isTrue()
+        assertThat(result.isSuccess()).isTrue()
 
 
         localWebDavClient.deleteFileOrDirectory(fileUrl)
@@ -209,12 +216,12 @@ class WebDavClientTest {
     fun moveFile() = runTest {
         val uploadFileResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
-        assertThat(uploadFileResult).isTrue()
+        assertThat(uploadFileResult.isSuccess()).isTrue()
 
 
         val result = localWebDavClient.moveFile(fileUrl, destinationFileUrl, true)
 
-        assertThat(result).isTrue()
+        assertThat(result.isSuccess()).isTrue()
 
 
         localWebDavClient.deleteFileOrDirectory(destinationFileUrl)
@@ -231,15 +238,17 @@ class WebDavClientTest {
 
         val uploadFileResult = localWebDavClient.uploadFile(sourceDirectory + fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
-        assertThat(uploadFileResult).isTrue()
+        assertThat(uploadFileResult.isSuccess()).isTrue()
 
 
         val result = localWebDavClient.moveFile(sourceDirectory, destinationDirectory + sourceDirectory, true)
 
-        assertThat(result).isTrue()
+        assertThat(result.isSuccess()).isTrue()
 
 
-        val destinationDirContent = localWebDavClient.list(destinationDirectory, Depth.Infinity)
+        val destinationDirContentResult = localWebDavClient.list(destinationDirectory, Depth.Infinity)
+        assertThat(destinationDirContentResult.isSuccess()).isTrue()
+        val destinationDirContent = (destinationDirContentResult as Success).data
         assertThat(destinationDirContent).hasSize(3) // assert that also containing file has been moved
 
         val files = destinationDirContent.filter { it.isFile }
@@ -259,12 +268,12 @@ class WebDavClientTest {
     fun fileExists() = runTest {
         val uploadFileResult = localWebDavClient.uploadFile(fileUrl, fileContent.encodeToByteArray(), UploadFileOptions("text/plain", true))
 
-        assertThat(uploadFileResult).isTrue()
+        assertThat(uploadFileResult.isSuccess()).isTrue()
 
 
         val result = localWebDavClient.fileExists(fileUrl)
 
-        assertThat(result).isTrue()
+        assertThat(result.isSuccess()).isTrue()
 
 
         localWebDavClient.deleteFileOrDirectory(destinationFileUrl)
@@ -279,32 +288,34 @@ class WebDavClientTest {
 
         val result = localWebDavClient.fileExists(fileUrl)
 
-        assertThat(result).isFalse()
+        assertThat(result.isSuccess()).isFalse()
+        assertThat(result.isFailure()).isTrue()
     }
 
     @Test
     fun getAvailablePropertyNames() = runTest {
         val result = localWebDavClient.getAvailablePropertyNames("/", Depth.DirectoryListing)
 
-        assertThat(result).hasSize(3)
+        assertThat(result.isSuccess()).isTrue()
+        assertThat((result as Success).data).hasSize(3)
     }
 
     @Test
     fun localWebDav() = runTest {
         val result = localWebDavClient.listResource("/")
 
-        assertThat(result).isNotNull()
+        assertThat(result.isSuccess()).isTrue()
     }
 
 
     private suspend fun assertIsDeleted(fileUrl: String) {
         val fileOnServer = localWebDavClient.listResource(fileUrl)
 
-        if (fileOnServer == null) {
-            assertThat(fileOnServer).isNull()
-        } else {
+        if (fileOnServer.isFailure()) {
+            assertThat(fileOnServer.response.statusCode).isEqualTo(404)
+        } else if (fileOnServer.isSuccess()) {
             // hm, the WebDAV server i use still returns the file, which is not conformant to standard, it just sets its contentlength to 0
-            assertThat(fileOnServer.properties.first { it.name == "getcontentlength" }.value).isEqualTo("0")
+            assertThat((fileOnServer as Success<DavResource, String>).data.contentLength).isEqualTo(0) // why doesn't smart cast to Success<DavResource, String> work?
         }
     }
 

@@ -1,7 +1,10 @@
 package net.dankito.dav.webdav.operations
 
 import io.ktor.http.*
+import net.dankito.dav.DavResult
 import net.dankito.dav.DefaultNamespaces
+import net.dankito.dav.Failure
+import net.dankito.dav.Success
 import net.dankito.dav.web.*
 import net.dankito.dav.webdav.model.*
 
@@ -31,6 +34,19 @@ open class PropFindHandler(
               <d:propname/>
             </d:propfind>
         """.trimIndent()
+
+
+        fun DavResult<List<DavResource>, String>.asSingleResource(): DavResult<DavResource, String> {
+            val response = this.response
+
+            return if (this.isSuccess()) {
+                val data = this.data as List<DavResource> // why doesn't the compiler get that data is of type List<DavResource>?
+                if (data.isNotEmpty()) Success(data.first(), response)
+                else Failure(response)
+            }
+            else if (this.isFailure()) Failure(this.exception, response)
+            else Failure(response)
+        }
     }
 
 
@@ -75,7 +91,7 @@ open class PropFindHandler(
         namespaceUri?.let { DefaultNamespaces.getPrefixForNamespace(namespaceUri) }
 
 
-    protected open suspend fun makeRequest(url: String, depth: Depth, body: String?): List<DavResource> {
+    protected open suspend fun makeRequest(url: String, depth: Depth, body: String?): DavResult<List<DavResource>, String> {
         val request = RequestParameters(url, String::class, body, ContentTypes.XML, ContentTypes.XML, mapOf(
             "DEPTH" to depth.apiValue
         ))
@@ -83,11 +99,14 @@ open class PropFindHandler(
         val response = executeCustomRequest(PropFindHttpMethod, request)
 
         return if (response.isSuccessResponse) {
-            multiStatusReader.parse(response.body!!)?.let {
-                it.responses.map { mapToResource(it) }
-            } ?: emptyList()
+            val (error, multiStatus) = multiStatusReader.parse(response.body!!)
+            if (multiStatus != null) {
+                Success(multiStatus.responses.map { mapToResource(it) }, response)
+            } else {
+                Failure(error, response)
+            }
         } else {
-            emptyList() // TODO: return error
+            Failure(response)
         }
     }
 

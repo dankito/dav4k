@@ -1,6 +1,5 @@
 package net.dankito.dav.web
 
-import net.dankito.dav.web.ContentTypes
 import kotlin.reflect.KClass
 
 open class RequestParameters<T : Any>(

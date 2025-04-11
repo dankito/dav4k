@@ -6,6 +6,7 @@ import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.operations.*
+import net.dankito.dav.webdav.operations.PropFindHandler.Companion.asSingleResource
 import net.dankito.dav.webdav.options.UploadFileOptions
 
 open class WebDavClient(
@@ -42,7 +43,7 @@ open class WebDavClient(
      * @param props The properties of the resource to return. If no properties are specified, then the server decides
      * which properties to return for the resource.
      */
-    open suspend fun listResource(url: String, vararg props: Property) = list(url, Depth.ResourceOnly, *props).firstOrNull()
+    open suspend fun listResource(url: String, vararg props: Property) = list(url, Depth.ResourceOnly, *props).asSingleResource()
 
     /**
      * Lists the properties of the resource specified by [url] and all its direct children.

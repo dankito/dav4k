@@ -18,11 +18,11 @@ open class MultiStatusReader {
     protected val log by logger()
 
 
-    open fun parse(xml: String): MultiStatus? = try {
+    open fun parse(xml: String): Pair<Throwable?, MultiStatus?> = try {
         val reader = xmlStreaming.newReader(fixXmlForReading(xml))
 
         if (reader.readToNextStartTag() == false || reader.localName != "multistatus") {
-            null
+            null to null
         } else {
             val responses = mutableListOf<Response>()
             var responseDescription: String? = null
@@ -36,11 +36,11 @@ open class MultiStatusReader {
                 }
             }
 
-            MultiStatus(responses, responseDescription, syncToken)
+            null to MultiStatus(responses, responseDescription, syncToken)
         }
     } catch (e: Throwable) {
         log.error(e) { "Could not parse XML to MultiStatus object:\n$xml" }
-        null
+        e to null
     }
 
 

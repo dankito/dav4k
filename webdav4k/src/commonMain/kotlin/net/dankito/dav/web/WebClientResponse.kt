@@ -1,6 +1,6 @@
 package net.dankito.dav.web
 
-open class WebClientResponse<T>(
+open class WebClientResponse<out T>(
     open val successful: Boolean,
     open val url: String,
     open val responseDetails: ResponseDetails? = null,
