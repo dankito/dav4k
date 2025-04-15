@@ -8,7 +8,7 @@ import net.dankito.dav.Success
 import net.dankito.dav.web.*
 import net.dankito.dav.webdav.model.*
 
-open class PropFindHandler(
+open class PropFindCommand(
     webClient: WebClient,
     protected val multiStatusReader: MultiStatusReader = MultiStatusReader.Instance
 ) : CommandBase(webClient) {

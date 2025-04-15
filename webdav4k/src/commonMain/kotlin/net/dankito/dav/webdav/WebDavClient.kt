@@ -6,7 +6,7 @@ import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.operations.*
-import net.dankito.dav.webdav.operations.PropFindHandler.Companion.asSingleResource
+import net.dankito.dav.webdav.operations.PropFindCommand.Companion.asSingleResource
 import net.dankito.dav.webdav.options.UploadFileOptions
 
 open class WebDavClient(
@@ -16,7 +16,7 @@ open class WebDavClient(
     constructor(webDavUrl: String, credentials: Credentials? = null) : this(KtorWebClient(webDavUrl, credentials))
 
 
-    protected open val propFind = PropFindHandler(webClient)
+    protected open val propFind = PropFindCommand(webClient)
 
     protected open val createDirectory = CreateDirectoryCommand(webClient)
 
@@ -73,7 +73,7 @@ open class WebDavClient(
      * @param props The properties of each resource to return. If no properties are specified, then the server decides
      * which properties to return for each resource.
      */
-    open suspend fun list(url: String, depth: Depth = PropFindHandler.DefaultDepth, vararg props: Property) =
+    open suspend fun list(url: String, depth: Depth = PropFindCommand.DefaultDepth, vararg props: Property) =
         if (props.isEmpty()) propFind.allProp(url, depth)
         else propFind.prop(url, depth, *props)
 
@@ -83,7 +83,7 @@ open class WebDavClient(
      * But according to my experience does not work reliably. Some servers don't return any property names, others
      * only a few. Haven't found any server that really returned all available property names of a resource.
      */
-    open suspend fun getAvailablePropertyNames(url: String, depth: Depth = PropFindHandler.DefaultDepth) =
+    open suspend fun getAvailablePropertyNames(url: String, depth: Depth = PropFindCommand.DefaultDepth) =
         propFind.propName(url, depth)
 
 
