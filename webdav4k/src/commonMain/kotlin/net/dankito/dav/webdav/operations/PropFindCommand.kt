@@ -114,6 +114,10 @@ open class PropFindCommand(
         val successResponses = response.propStats.filter { it.status?.isSuccess == true } // there should be only one success PropStats per Response
         val errorResponses = response.propStats.filter { it.status?.isSuccess == false } // and may one error PropStats for requested properties that have not been found
 
+        if (response.href.size > 1) {
+            Log.warn { "Retrieved more than one href for Resource! ${response.href}" }
+        }
+
         return DavResource(response.href.first(), successResponses.flatMap { it.properties }, errorResponses.flatMap { it.properties })
     }
 
