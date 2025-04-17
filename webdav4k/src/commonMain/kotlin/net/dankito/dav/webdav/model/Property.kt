@@ -297,4 +297,9 @@ data class Property(
 
         // there are additional XML elements defined for error messages, see https://sabre.io/dav/xmlelements/
     }
+
+
+    object OwnCloud {
+        val MetaPathForUser = Property.ownCloudProperty("meta-path-for-user")
+    }
 }
