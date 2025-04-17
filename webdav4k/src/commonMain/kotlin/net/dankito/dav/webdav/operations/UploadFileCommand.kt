@@ -1,9 +1,9 @@
 package net.dankito.dav.webdav.operations
 
 import net.dankito.dav.DavResult
-import net.dankito.dav.web.ContentTypes
-import net.dankito.dav.web.RequestParameters
-import net.dankito.dav.web.WebClient
+import net.dankito.web.client.ContentTypes
+import net.dankito.web.client.RequestParameters
+import net.dankito.web.client.WebClient
 import net.dankito.dav.webdav.options.UploadFileOptions
 
 open class UploadFileCommand(webClient: WebClient) : CommandBase(webClient) {

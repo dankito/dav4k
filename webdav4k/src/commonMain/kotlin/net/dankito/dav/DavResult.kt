@@ -1,6 +1,6 @@
 package net.dankito.dav
 
-import net.dankito.dav.web.WebClientResponse
+import net.dankito.web.client.WebClientResponse
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 

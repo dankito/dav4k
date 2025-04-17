@@ -4,10 +4,10 @@ import io.ktor.http.*
 import net.dankito.dav.DavResult
 import net.dankito.dav.Failure
 import net.dankito.dav.Success
-import net.dankito.dav.web.KtorWebClient
-import net.dankito.dav.web.RequestParameters
-import net.dankito.dav.web.WebClient
-import net.dankito.dav.web.WebClientResponse
+import net.dankito.web.client.KtorWebClient
+import net.dankito.web.client.RequestParameters
+import net.dankito.web.client.WebClient
+import net.dankito.web.client.WebClientResponse
 
 abstract class CommandBase(
     protected val webClient: WebClient,

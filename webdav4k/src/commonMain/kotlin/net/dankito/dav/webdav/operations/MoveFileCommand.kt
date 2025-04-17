@@ -2,8 +2,8 @@ package net.dankito.dav.webdav.operations
 
 import io.ktor.http.*
 import net.dankito.dav.DavResult
-import net.dankito.dav.web.RequestParameters
-import net.dankito.dav.web.WebClient
+import net.dankito.web.client.RequestParameters
+import net.dankito.web.client.WebClient
 
 open class MoveFileCommand(webClient: WebClient) : CommandBase(webClient) {
 

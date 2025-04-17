@@ -1,8 +1,8 @@
 package net.dankito.dav.webdav.operations
 
 import net.dankito.dav.DavResult
-import net.dankito.dav.web.WebClient
-import net.dankito.dav.web.head
+import net.dankito.web.client.WebClient
+import net.dankito.web.client.head
 
 open class FileExistsCommand(webClient: WebClient) : CommandBase(webClient) {
 

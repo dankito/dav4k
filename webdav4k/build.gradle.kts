@@ -79,9 +79,9 @@ kotlin {
 
     val xmlUtilVersion: String by project
 
-    val ktorVersion: String by project
     val kotlinCoroutinesVersion: String by project
 
+    val webClientVersion: String by project
     val klfVersion: String by project
 
     val assertKVersion: String by project
@@ -91,10 +91,8 @@ kotlin {
         commonMain.dependencies {
             implementation("io.github.pdvrieze.xmlutil:core:$xmlUtilVersion")
 
-            implementation("io.ktor:ktor-client-core:$ktorVersion")
-            implementation("io.ktor:ktor-client-auth:$ktorVersion")
-            implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+            api("net.dankito.web:web-client-api:$webClientVersion") // to publish Authentication classes
+            implementation("net.dankito.web:ktor-web-client:$webClientVersion")
 
             implementation("net.codinux.log:klf:$klfVersion")
         }
@@ -107,7 +105,7 @@ kotlin {
 
 
         jvmMain.dependencies {
-            implementation("io.ktor:ktor-client-cio:$ktorVersion")
+
         }
 
         jvmTest.dependencies {
@@ -116,24 +114,20 @@ kotlin {
 
 
         appleMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+
         }
         linuxMain.dependencies {
-            implementation("io.ktor:ktor-client-curl:$ktorVersion")
+
         }
         mingwMain.dependencies {
-            implementation("io.ktor:ktor-client-winhttp:$ktorVersion")
+
         }
 
-        jsMain {
-            dependencies {
-                implementation("io.ktor:ktor-client-js:$ktorVersion")
-            }
+        jsMain.dependencies {
+
         }
-        wasmJsMain {
-            dependencies {
-                implementation("io.ktor:ktor-client-js:$ktorVersion")
-            }
+        wasmJsMain.dependencies {
+
         }
     }
 }

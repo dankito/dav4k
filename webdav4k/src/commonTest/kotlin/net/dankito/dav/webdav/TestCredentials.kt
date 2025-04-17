@@ -1,7 +1,7 @@
 package net.dankito.dav.webdav
 
-import net.dankito.dav.web.KtorWebClient
-import net.dankito.dav.web.credentials.Credentials
+import net.dankito.web.client.KtorWebClient
+import net.dankito.web.client.auth.Authentication
 
 object TestCredentials {
 
@@ -9,7 +9,7 @@ object TestCredentials {
 
     const val WebDavUrl = "<set url>"
 
-    val credentials: Credentials? = null // may also set credentials
+    val credentials: Authentication? = null // may also set credentials
 
     fun createWebClient() = KtorWebClient(WebDavUrl, credentials)
 

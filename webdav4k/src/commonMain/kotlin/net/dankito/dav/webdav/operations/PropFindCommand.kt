@@ -5,7 +5,7 @@ import net.dankito.dav.DavResult
 import net.dankito.dav.DefaultNamespaces
 import net.dankito.dav.Failure
 import net.dankito.dav.Success
-import net.dankito.dav.web.*
+import net.dankito.web.client.*
 import net.dankito.dav.webdav.model.*
 
 open class PropFindCommand(

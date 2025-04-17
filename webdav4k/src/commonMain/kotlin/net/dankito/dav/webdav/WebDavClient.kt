@@ -1,19 +1,18 @@
 package net.dankito.dav.webdav
 
-import net.dankito.dav.web.KtorWebClient
-import net.dankito.dav.web.WebClient
-import net.dankito.dav.web.credentials.Credentials
 import net.dankito.dav.webdav.model.Depth
 import net.dankito.dav.webdav.model.Property
 import net.dankito.dav.webdav.operations.*
 import net.dankito.dav.webdav.operations.PropFindCommand.Companion.asSingleResource
 import net.dankito.dav.webdav.options.UploadFileOptions
+import net.dankito.web.client.*
+import net.dankito.web.client.auth.Authentication
 
 open class WebDavClient(
     webClient: WebClient,
 ) {
 
-    constructor(webDavUrl: String, credentials: Credentials? = null) : this(KtorWebClient(webDavUrl, credentials))
+    constructor(webDavUrl: String, authentication: Authentication? = null) : this(KtorWebClient(webDavUrl, authentication))
 
 
     protected open val propFind = PropFindCommand(webClient)
