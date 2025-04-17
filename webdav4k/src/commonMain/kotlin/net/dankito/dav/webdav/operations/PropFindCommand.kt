@@ -1,6 +1,6 @@
 package net.dankito.dav.webdav.operations
 
-import io.ktor.http.*
+import net.codinux.log.Log
 import net.dankito.dav.DavResult
 import net.dankito.dav.DefaultNamespaces
 import net.dankito.dav.Failure
@@ -14,7 +14,7 @@ open class PropFindCommand(
 ) : CommandBase(webClient) {
 
     companion object {
-        val PropFindHttpMethod = HttpMethod("PROPFIND")
+        val PropFindHttpMethod = "PROPFIND"
 
         /**
          * The default is to return only the resource specified by url.

@@ -1,10 +1,8 @@
 package net.dankito.dav.webdav.operations
 
-import io.ktor.http.*
 import net.dankito.dav.DavResult
 import net.dankito.dav.Failure
 import net.dankito.dav.Success
-import net.dankito.web.client.KtorWebClient
 import net.dankito.web.client.RequestParameters
 import net.dankito.web.client.WebClient
 import net.dankito.web.client.WebClientResponse
@@ -13,9 +11,8 @@ abstract class CommandBase(
     protected val webClient: WebClient,
 ) {
 
-    protected open suspend fun <T : Any> executeCustomRequest(method: HttpMethod, request: RequestParameters<T>) =
-        if (webClient is KtorWebClient) webClient.custom(method, request)
-        else webClient.custom(method.value, request)
+    protected open suspend fun <T : Any> executeCustomRequest(method: String, request: RequestParameters<T>) =
+        webClient.custom(method, request)
 
 
     protected open fun toBooleanResult(response: WebClientResponse<Unit>): DavResult<Boolean, Unit> =
