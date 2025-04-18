@@ -1,12 +1,12 @@
 package net.dankito.dav
 
-import net.dankito.web.client.WebClientResponse
+import net.dankito.web.client.WebClientResult
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 @OptIn(ExperimentalContracts::class)
 sealed class DavResult<out T : Any, R>(
-    val response: WebClientResponse<R>
+    val response: WebClientResult<R>
 ) {
 
     fun isSuccess(): Boolean {
@@ -24,12 +24,12 @@ sealed class DavResult<out T : Any, R>(
     }
 }
 
-class Success<out T : Any, R>(val data: T, response: WebClientResponse<R>) : DavResult<T, R>(response) {
+class Success<out T : Any, R>(val data: T, response: WebClientResult<R>) : DavResult<T, R>(response) {
     override fun toString() = "Success: $data"
 }
 
-class Failure<out T : Any, R>(val exception: Throwable?, response: WebClientResponse<R>) : DavResult<T, R>(response) {
-    constructor(response: WebClientResponse<R>) : this(response.error, response)
+class Failure<out T : Any, R>(val exception: Throwable?, response: WebClientResult<R>) : DavResult<T, R>(response) {
+    constructor(response: WebClientResult<R>) : this(response.error, response)
 
     override fun toString() = "Failure: $exception"
 }

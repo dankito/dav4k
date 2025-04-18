@@ -98,7 +98,7 @@ open class PropFindCommand(
 
         val response = executeCustomRequest(PropFindHttpMethod, request)
 
-        return if (response.isSuccessResponse) {
+        return if (response.successful) {
             val (error, multiStatus) = multiStatusReader.parse(response.body!!)
             if (multiStatus != null) {
                 Success(multiStatus.responses.map { mapToResource(it) }, response)
