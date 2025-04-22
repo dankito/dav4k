@@ -52,7 +52,8 @@ class WebDavClientTest {
 
             // asserting property values have been mapped
             assertThat(resource.displayname).isNotNull().isNotEmpty()
-            assertThat(resource.lastModified).isNotNull().isNotEmpty()
+            assertThat(resource.lastModified).isNotNull()
+            assertThat(resource.lastModified!!.epochSeconds).isGreaterThan(1_744_000_000)
             assertThat(resource.etag).isNotNull().isNotEmpty()
             if (resource.isFile) {
                 assertThat(resource.contentType).isNotNull().isNotEmpty()

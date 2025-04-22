@@ -82,6 +82,7 @@ kotlin {
     val kotlinCoroutinesVersion: String by project
 
     val webClientVersion: String by project
+    val kmpDateTimeVersion: String by project
     val klfVersion: String by project
 
     val assertKVersion: String by project
@@ -93,6 +94,8 @@ kotlin {
 
             api("net.dankito.web:web-client-api:$webClientVersion") // to publish Authentication classes
             implementation("net.dankito.web:ktor-web-client:$webClientVersion")
+
+            api("net.dankito.datetime:kmp-datetime:$kmpDateTimeVersion")
 
             implementation("net.codinux.log:klf:$klfVersion")
         }

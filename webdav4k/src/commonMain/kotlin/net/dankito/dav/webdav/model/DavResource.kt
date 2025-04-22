@@ -1,6 +1,8 @@
 package net.dankito.dav.webdav.model
 
+import net.dankito.datetime.Instant
 import net.dankito.dav.DefaultNamespaces
+import net.dankito.web.client.util.WebDateTimeUtil
 
 data class DavResource(
     val url: String,
@@ -17,7 +19,7 @@ data class DavResource(
     val isFile = isFolder == false
 
 
-    val creationDate = findPropertyValue(Property.Dav.CreationDate) // TODO: map to DateTime
+    val creationDate = mapInstant(Property.Dav.CreationDate)
 
     val displayname = findPropertyValue(Property.Dav.Displayname)
 
@@ -29,7 +31,7 @@ data class DavResource(
 
     val etag = findPropertyValue(Property.Dav.ETag)
 
-    val lastModified = findPropertyValue(Property.Dav.LastModified) // TODO: map to DateTime
+    val lastModified = mapInstant(Property.Dav.LastModified)
 
 
     fun findDavPropertyValue(propertyName: String) = findPropertyValue(propertyName, DefaultNamespaces.Dav)
@@ -47,6 +49,10 @@ data class DavResource(
 
     fun findProperty(propertyName: String, namespaceUri: String?): Property? =
         this.properties.firstOrNull { it.name == propertyName && it.namespaceUri == namespaceUri }
+
+    private fun mapInstant(property: Property): Instant? = findPropertyValue(property)?.let { propertyValue ->
+        WebDateTimeUtil.httpDateStringToInstantOrNull(propertyValue)
+    }
 
 
     override fun toString() = "${if (isFolder) "Folder" else "File"} $url ${properties.size} properties: ${properties.joinToString { it.name }}"
