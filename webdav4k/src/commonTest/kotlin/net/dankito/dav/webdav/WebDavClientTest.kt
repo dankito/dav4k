@@ -111,7 +111,8 @@ class WebDavClientTest {
             assertThat(resource.notFoundProperties.map { it.name }).containsAtLeast("share-types", "downloadURL")
 
             // asserting property values have been mapped
-            assertThat(resource.lastModified).isNotNull().isNotEmpty()
+            assertThat(resource.lastModified).isNotNull()
+            assertThat(resource.lastModified!!.epochSeconds).isGreaterThan(1_745_000_000)
             assertThat(resource.etag).isNotNull().isNotEmpty()
             if (resource.isFile) {
                 assertThat(resource.contentType).isNotNull().isNotEmpty()
