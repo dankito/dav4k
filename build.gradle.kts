@@ -11,6 +11,5 @@ allprojects {
 
     repositories {
         mavenCentral()
-        mavenLocal() // TODO: remove again as soon as ktor-web-client 1.0.0 is released
     }
 }
