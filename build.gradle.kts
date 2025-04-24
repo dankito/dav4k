@@ -1,7 +1,7 @@
 
 allprojects {
     group = "net.dankito.dav"
-    version = "0.5.0-SNAPSHOT"
+    version = "0.9.0"
 
 
     ext["sourceCodeRepositoryBaseUrl"] = "github.com/dankito/dav4k"
